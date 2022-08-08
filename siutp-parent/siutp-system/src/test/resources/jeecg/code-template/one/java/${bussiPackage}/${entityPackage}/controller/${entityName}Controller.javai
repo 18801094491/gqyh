@@ -1,0 +1,213 @@
+package ${bussiPackage}.${entityPackage}.controller;
+
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import com.zcdy.dsc.common.api.vo.ResultData;
+import com.zcdy.dsc.common.system.query.QueryGenerator;
+import com.zcdy.dsc.common.aspect.annotation.AutoLog;
+import com.zcdy.dsc.common.system.util.JwtUtil;
+import com.zcdy.dsc.common.util.ConvertUtils;
+import ${bussiPackage}.${entityPackage}.entity.${entityName};
+import ${bussiPackage}.${entityPackage}.param.${entityName}Param;
+import ${bussiPackage}.${entityPackage}.service.${entityName}Service;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zcdy.dsc.modules.operation.equipment.constant.DelFlagConstant;
+import lombok.extern.slf4j.Slf4j;
+import com.zcdy.dsc.common.system.base.controller.BaseController;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+ /**
+ * @Description: ${tableVo.ftlDescription}
+ * @Author: 在信汇通
+ * @Date:   ${.now?string["yyyy-MM-dd HH:mm:ss"]}
+ * @Version: V1.0
+ */
+@Slf4j
+@Api(tags="${tableVo.ftlDescription}")
+@RestController
+@RequestMapping("/${entityPackage}/<#if extendParams?exists && extendParams.sonUrl?exists>${extendParams.sonUrl}<#else>${entityName?uncap_first}</#if>")
+public class ${entityName}Controller extends BaseController<${entityName}, ${entityName}Service> {
+	@Autowired
+	private ${entityName}Service ${entityName?uncap_first}Service;
+	
+	/**
+	 * 分页列表查询
+	 *
+	 * @param ${entityName?uncap_first}Param
+	 * @param req
+	 * @return
+	 */
+	@AutoLog(value = "${tableVo.ftlDescription}-分页列表查询")
+	@ApiOperation(value="${tableVo.ftlDescription}-分页列表查询", notes="${tableVo.ftlDescription}-分页列表查询")
+	@GetMapping(value = "/list")
+	public ResultData<?> queryPageList(${entityName}Param ${entityName?uncap_first}Param,
+								   HttpServletRequest req) {
+		${entityName} searchParam = new ${entityName}(${entityName?uncap_first}Param);
+		searchParam.setDelFlag(DelFlagConstant.NORMAL);//删除标记=0
+		QueryWrapper<${entityName}> queryWrapper = QueryGenerator.initQueryWrapper(searchParam, req.getParameterMap());
+		queryWrapper.lambda().orderByDesc(${entityName}::getCreateTime);//默认创建时间倒序
+		Page<${entityName}> page = new Page<${entityName}>(${entityName?uncap_first}Param.getPageNo(), ${entityName?uncap_first}Param.getPageSize());
+		IPage<${entityName}> pageList = ${entityName?uncap_first}Service.page(page, queryWrapper);
+		return ResultData.ok(pageList);
+	}
+	
+	/**
+	 * 添加
+	 * @param ${entityName?uncap_first}
+	 * @return
+	 */
+	@AutoLog(value = "${tableVo.ftlDescription}-添加")
+	@ApiOperation(value="${tableVo.ftlDescription}-添加", notes="${tableVo.ftlDescription}-添加")
+	@PostMapping(value = "/add")
+	public ResultData<?> add(@RequestBody ${entityName} ${entityName?uncap_first}, HttpServletRequest req) {
+	    ResultData<${entityName}> resultData = new ResultData<${entityName}>();
+	    try {
+            String username = JwtUtil.getUserNameByToken(req);
+            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+            ${entityName?uncap_first}.setId(uuid);
+            ${entityName?uncap_first}.setCreateTime(new Date());
+            ${entityName?uncap_first}.setCreateBy(username);
+            boolean ok = ${entityName?uncap_first}Service.save(${entityName?uncap_first});
+            if(ok){
+                resultData.success("保存成功！");
+            }
+            else{
+                resultData.error500("操作失败");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            resultData.error500("操作失败");
+        }
+        return resultData;
+	}
+
+	/**
+	 * 编辑
+	 * @param ${entityName?uncap_first}
+	 * @return
+	 */
+	@AutoLog(value = "${tableVo.ftlDescription}-编辑")
+	@ApiOperation(value="${tableVo.ftlDescription}-编辑", notes="${tableVo.ftlDescription}-编辑")
+	@PostMapping(value = "/edit")
+	public ResultData<?> edit(@RequestBody ${entityName} ${entityName?uncap_first}, HttpServletRequest req) {
+        ResultData<${entityName}> resultData = new ResultData<${entityName}>();
+        try {
+            if (${entityName?uncap_first} == null || ${entityName?uncap_first}.getId() == null) {
+                resultData.error500("id不能为空");
+                return resultData;
+            }
+            String username = JwtUtil.getUserNameByToken(req);
+            ${entityName?uncap_first}.setUpdateTime(new Date());
+            ${entityName?uncap_first}.setUpdateBy(username);
+            boolean ok = ${entityName?uncap_first}Service.updateById(${entityName?uncap_first});
+            if (ok) {
+                resultData.success("编辑成功！");
+            } else {
+                resultData.error500("操作失败");
+            }
+        } catch (
+                Exception e) {
+            log.error(e.getMessage(), e);
+            resultData.error500("操作失败");
+        }
+        return resultData;
+	}
+
+	/**
+	 * 通过id删除
+	 * @param id
+	 * @return
+	 */
+	@AutoLog(value = "${tableVo.ftlDescription}-通过id删除")
+	@ApiOperation(value="${tableVo.ftlDescription}-通过id删除", notes="${tableVo.ftlDescription}-通过id删除")
+	@DeleteMapping(value = "/delete")
+	public ResultData<?> deleteById(@RequestParam("id") String id, HttpServletRequest req) {
+        ResultData<${entityName}> resultData = new ResultData<${entityName}>();
+        if (id == null) {
+            return ResultData.error("id不能为空");
+        }
+        ${entityName} ${entityName?uncap_first} = new ${entityName}();
+        ${entityName?uncap_first}.setId(id);
+        ${entityName?uncap_first}.setDelFlag(DelFlagConstant.DELETED);//删除标记
+        String username = JwtUtil.getUserNameByToken(req);
+        ${entityName?uncap_first}.setUpdateTime(new Date());
+        ${entityName?uncap_first}.setUpdateBy(username);
+        boolean ok = ${entityName?uncap_first}Service.updateById(${entityName?uncap_first});//逻辑删除
+        //boolean ok = ${entityName?uncap_first}Service.removeById(id); //物理删除
+        if (ok) {
+            resultData.success("删除成功!");
+        } else {
+            resultData.error500("删除失败!");
+        }
+        return resultData;
+	}
+	
+	/**
+	 * 批量删除
+	 *
+	 * @param ids
+	 * @return
+	 */
+	@AutoLog(value = "${tableVo.ftlDescription}-批量删除")
+	@ApiOperation(value="${tableVo.ftlDescription}-批量删除", notes="${tableVo.ftlDescription}-批量删除")
+	@DeleteMapping(value = "/deletes")
+	public ResultData<?> deleteBatch(@RequestParam(name="ids",required=true) String ids, HttpServletRequest req) {
+        ResultData<${entityName}> resultData = new ResultData<${entityName}>();
+        if(ConvertUtils.isEmpty(ids)) {
+            resultData.error500("参数不识别！");
+        }else {
+            List<String> list = Arrays.asList(ids.split(","));
+            List<${entityName}> entityList = new ArrayList<>();
+            for(String s : list)
+            {
+                ${entityName} ${entityName?uncap_first} = new ${entityName}();
+                ${entityName?uncap_first}.setId(s);
+                ${entityName?uncap_first}.setDelFlag(DelFlagConstant.DELETED);//删除标记
+                ${entityName?uncap_first}.setUpdateTime(new Date());
+                String username = JwtUtil.getUserNameByToken(req);
+                ${entityName?uncap_first}.setUpdateBy(username);
+                entityList.add(${entityName?uncap_first});
+            }
+            boolean ok = ${entityName?uncap_first}Service.updateBatchById(entityList);//批量逻辑删除
+            //${entityName?uncap_first}Service.removeByIds(Arrays.asList(ids.split(",")));//批量物理删除
+
+            if(ok){
+                resultData.success("批量删除成功!");
+            }
+            else{
+                resultData.error500("操作失败");
+            }
+        }
+        return resultData;
+	}
+	
+	/**
+	 * 通过id查询
+	 * @param id
+	 * @return
+	 */
+	@AutoLog(value = "${tableVo.ftlDescription}-通过id查询")
+	@ApiOperation(value="${tableVo.ftlDescription}-通过id查询", notes="${tableVo.ftlDescription}-通过id查询")
+	@GetMapping(value = "/query")
+	public ResultData<?> queryById(@RequestParam("id") String id) {
+        ResultData<${entityName}> resultData = new ResultData<${entityName}>();
+        try {
+            if (ConvertUtils.isEmpty(id)) {
+                resultData.error500("id不能为空");
+                return resultData;
+            }
+            ${entityName} ${entityName?uncap_first} = ${entityName?uncap_first}Service.getById(id);
+            resultData.setData(${entityName?uncap_first});
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            resultData.error500("查询失败");
+        }
+        return resultData;
+	}
+}

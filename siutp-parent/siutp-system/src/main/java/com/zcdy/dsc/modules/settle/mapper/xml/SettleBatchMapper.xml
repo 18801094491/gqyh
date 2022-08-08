@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.settle.mapper.SettleBatchMapper">
+
+	<select id="historyData" parameterType="com.zcdy.dsc.modules.settle.param.CustometInfoParam" resultType="com.zcdy.dsc.modules.settle.vo.SettlementStatisticsVo">
+		SELECT
+		t.customer_id customerId,
+		t2.customer_name customerName,
+		(SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code = 'customer_type' ) AND item_value = t2.customer_type ) customerType,
+		(SELECT count(1) AS signCount FROM settle_contract sc WHERE sc.customer_id =
+		t.customer_id ) AS signCount,
+		t.contract_id contractId,
+		t4.start_date contractValidateDate,
+		t4.end_date contractInvalidateDate,
+		t4.contract_name contractName,
+		CONCAT('[',t7.`name`,'][',t5.equipment_location,'][',t5.equipment_sn,']')
+		equipmentInfo,
+		t6.district_name equipmentDistrictName,
+		t.current_flow_date currentFlowDate,
+		t.current_flow currentFlow,
+		t8.current_flow_date previousFlowDate,
+		t8.current_flow previousFlow,
+		t.used_flow currentUsedFlow,
+		t.unit_price currentWaterPrice,
+		t.total_cost currentCost,
+		(SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code = 'settle_status' ) AND item_value = t.`status` ) status,
+		t9.settle_date settleDate
+		FROM
+		settle_batch t
+		LEFT JOIN settle_customer t2 ON t2.id = t.customer_id
+		LEFT JOIN sys_category t3 ON t3.`code` = t2.customer_type
+		LEFT JOIN settle_contract t4 ON t4.id = t.contract_id
+		LEFT JOIN opt_equipment t5 ON t5.id = t.equipment_id
+		LEFT JOIN settle_district t6 ON t6.id = t.district_id
+		LEFT JOIN sys_category t7 ON t5.equipment_section = t7.`code`
+		LEFT JOIN settle_batch t8 ON t8.id = t.previous_id
+		LEFT JOIN settle_checklist t9 on t9.id=t.checklist_id
+		where 1=1 and t.`status`!='03'
+		<if test="param.customerName!=null and param.customerName!=''">
+			and t2.customer_name like concat('%',#{param.customerName},'%')
+		</if>
+		<if test="param.startTime!=null and param.startTime!=''">
+			and DATE_FORMAT(t9.settle_date,'%Y-%m')  &gt;=#{param.startTime}
+		</if>
+		<if test="param.endTime!=null and param.endTime!=''">
+			and DATE_FORMAT(t9.settle_date,'%Y-%m') &lt;=#{param.endTime}
+		</if>
+		<if test="param.status!=null and param.status!=''">
+			and t.`status`=#{param.status}
+		</if>
+		<if test="param.districtId!=null and param.districtId!=''">
+			and t.district_id=#{param.districtId}
+		</if>
+		order by t.customer_id,t.current_flow_time
+	</select>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.MeterFlowMapper">
+    <select id="getMeterFlowByDateAndEquipmentId" resultType="com.zcdy.dsc.modules.operation.equipment.entity.MeterFlow">
+		select equipment_id as equipmentId,positive_flow as positiveFlow,navigate_flow as navigateFlow from meter_flow
+		where equipment_id=#{equipmentId} and statics_date=#{prevDate} limit 1
+    </select>
+
+
+    <select id="querynetFlowDay" resultType="com.zcdy.dsc.modules.operation.equipment.entity.MeterFlow">
+		SELECT
+		df.staticsDate AS staticsDate,
+		(case when m.netFlowDay is null then '0' else m.netFlowDay end) as netFlowDay
+		FROM
+		(SELECT  date_format(DATE_ADD(#{staticsDateEnd}, INTERVAL -d.id DAY),'%Y-%m-%d') AS staticsDate
+		FROM dayadd d where d.id &lt;#{daycount} ) df
+		left join
+		(SELECT
+		statics_date AS staticsDate,
+		sum( net_flow_day ) AS netFlowDay
+		FROM
+		meter_flow
+		GROUP BY
+		statics_date) m on m.staticsDate=df.staticsDate
+		order by df.staticsDate
+    </select>
+
+    <select id="queryAllNetFlowDay" resultType="com.zcdy.dsc.modules.operation.equipment.vo.MeterFlowVo">
+		select
+		DATE_FORMAT(NOW(),'%Y-%m-%d') as nowDate,
+		o.equipment_sn as equipmentSn,
+		s.name as sectionName,
+		sc.customer_name as customerName,
+		IFNULL(a.monthNetFlowDay,0) as monthNetFlowDay,
+		IFNULL(b.oldMonthNetFlowDay,0)as oldMonthNetFlowDay,
+		IFNULL(c.yearNetFlowDay,0) as yearNetFlowDay,
+		IFNULL(d.netFlowDay,0) as netFlowDay
+		from meter_flow m left join
+		(select equipment_id,sum( net_flow_day ) AS monthNetFlowDay  from meter_flow where statics_date like concat(#{nowMonth},'%') GROUP BY
+		equipment_id) a on  m.equipment_id=a.equipment_id
+		left join
+			(select equipment_id,sum( net_flow_day ) AS oldMonthNetFlowDay  from meter_flow where statics_date like concat(#{lastMonth},'%') GROUP BY
+		equipment_id) b on m.equipment_id=b.equipment_id
+		left join  	(select equipment_id,sum( net_flow_day ) AS yearNetFlowDay  from meter_flow where statics_date like concat(#{nowYear},'%') GROUP BY
+		equipment_id) c on  m.equipment_id=c.equipment_id
+	
+			left join  	(select equipment_id,sum( net_flow_day ) AS netFlowDay  from meter_flow GROUP BY
+		equipment_id) d on  m.equipment_id=d.equipment_id
+		left join opt_equipment o on m.equipment_id=o.id
+		left join sys_category s on o.equipment_section =s.code
+		left join settle_customer_equipment  sec on sec.equipment_id=m.equipment_id
+		left join settle_customer sc on sc.id=sec.customer_id
+		group by m.equipment_id
+
+    </select>
+
+	<delete id="deleteMeterFlowByDateAndEquipmentId">
+	    delete from meter_flow where equipment_id=#{equipmentId} and statics_date=DATE_FORMAT(NOW(),'%Y-%m-%d')
+	</delete>
+
+</mapper>

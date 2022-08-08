@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.gis.mapper.GisModelMapper">
+
+	<!-- 加载gis地图所有模型 -->
+	<select id="queryList" resultType="com.zcdy.dsc.modules.collection.gis.vo.GisModelImgVo">
+		SELECT
+			gis.id id,
+			gis.model_type_code modelTypeCode,
+			gis.model_img img,
+			gis.model_waring_img AS waringImg,
+			gis.model_on_img AS onImg,
+			gis.model_off_img AS offImg,
+			gis.width width,
+			gis.height height,
+			gis.model_offset modelOffset,
+			gis.longitude longitude,
+			gis.latitude latitude,
+			gis.model_position modelPosition,
+			CONCAT(t2.`name`,'[',t1.equipment_location,']') as equipLocation,
+			gis.model_level modelLevel,
+			t1.equipment_sn equipmentSn,
+			t1.equipment_location equipmentLocation,
+			t1.hk_monitor_code hkMonitorCode,
+			t2.name equipmentSection,
+		    t1.hk_monitor_key hkMonitorKey
+		FROM
+			gis_model gis
+		LEFT JOIN gis_equipment gise on gis.id=gise.model_id
+		LEFT JOIN opt_equipment t1 on t1.id=gise.equipment_id
+		LEFT JOIN sys_category t2 on t2.`code`=t1.equipment_section
+		where
+		 gis.model_type_code!='A03A02' AND  gis.del_flag = '0'
+	</select>
+	
+	<!-- 获取gis模型详情 -->
+	<select id="getDetail" resultType="com.zcdy.dsc.modules.collection.gis.vo.GisModelVO">
+		SELECT
+			model.model_name modelName,
+			model.model_type_code modelType,
+			model.model_level modelLevel,
+			model.model_on_img modelOnImg,
+			model_off_img modelOffImg,
+			model.model_waring_img modelWaringImg,
+			model.model_offset modelOffset,
+			model.model_position modelPosition,
+			model.longitude  longitude,
+			model.latitude latitude
+		FROM
+		gis_model model
+		where model.id=#{id}
+	</select>
+	<!--gis模型分页查询  -->
+	<select id="queryPageList" resultType="com.zcdy.dsc.modules.collection.gis.vo.GisModelVO">
+		SELECT
+			model.id id,
+			model.model_name modelName,
+			cat.name modelType,
+			model.model_type_code modelTypeCode,
+			model.model_level modelLevel,
+			model.model_on_img modelOnImg,
+			model.model_img modelImg,
+			model.height height,
+			model.width width,
+			model_off_img modelOffImg,
+			model.model_waring_img modelWaringImg,
+			model.model_offset modelOffset,
+			model.model_position modelPosition,
+			model.longitude  longitude,
+			model.latitude latitude,
+			ISNULL(gis.equipment_id) as bindStatus
+		FROM
+		gis_model model
+		LEFT JOIN sys_category cat on cat.code=model.model_type_code
+		left join gis_equipment gis on  gis.model_id=model.id 
+		where del_flag='0'
+		<if test="modelName!=null and modelName!=''">
+			and model_name like concat('%',#{modelName},'%')
+		</if>
+		<if test="modelTypeCode!=null and modelTypeCode!=''">
+			and model_type_code=#{modelTypeCode}
+		</if>
+		ORDER BY model.create_time desc
+	</select>
+
+	<!-- 加载gis地图所有模型 -->
+	<select id="queryListByIn" resultType="com.zcdy.dsc.modules.collection.gis.vo.GisModelImgVo">
+		SELECT
+			gis.id id,
+			gis.model_type_code modelTypeCode,
+			gis.model_img img,
+			gis.model_waring_img AS waringImg,
+			gis.model_on_img AS onImg,
+			gis.model_off_img AS offImg,
+			gis.width width,
+			gis.height height,
+			gis.model_offset modelOffset,
+			gis.longitude longitude,
+			gis.latitude latitude,
+			gis.model_position modelPosition,
+			CONCAT(t2.`name`,'[',t1.equipment_location,']') as equipLocation,
+			gis.model_level modelLevel
+		FROM
+			gis_model gis
+		LEFT JOIN gis_equipment gise on gis.id=gise.model_id
+		LEFT JOIN opt_equipment t1 on t1.id=gise.equipment_id
+		LEFT JOIN sys_category t2 on t2.`code`=t1.equipment_section
+		where
+		 gis.model_type_code in('LLB','YLB')
+	</select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.map.mapper.MapRegionManagementMapper">
+
+
+<!--    <select id="1">-->
+<!--select-->
+<!--id,region_name,region_address_info,region_point_longitude,region_point_latitude,create_by,create_time,update_by,update_time,active,del_flag-->
+<!--from map_region_management-->
+<!--<where>-->
+<!--    <if test="mapRegionManagement.regionName != null and mapRegionManagement.regionName != ''">-->
+<!--        and region_name like CONCAT('%', #{mapRegionManagement.regionName}, '%')-->
+<!--    </if>-->
+<!--</where>-->
+<!--    </select>-->
+</mapper>

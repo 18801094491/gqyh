@@ -1,0 +1,131 @@
+<template>
+	<div class='appProblemMap-page'>
+		<map class="appProblemMap" :longitude="longitude" :latitude="latitude" :markers="markers" @tap="onMapChange"></map>
+		<text class="goback" @tap="goBack" v-if="type !== 'detail' && lnglat">完成</text>
+	</div>
+</template>
+
+<script>
+var QQMapWX = require('./qqmap-wx-jssdk.js');
+	export default{
+		data(){
+			return{
+				latitude: '', 
+				longitude: '', 
+				type: '',
+				markers: [],
+				lnglat: null,
+			}
+		},
+		onLoad(option) { //初始加载
+			console.log('appProblemMap-option ： ', option)
+			this.longitude = option.lng;
+			this.latitude = option.lat;
+			this.type = option.type;
+			if (this.type === 'detail') {
+				this.markers = [{
+					id: 1,
+					iconPath: '/static/location.png',
+					longitude: this.longitude,
+					latitude: this.latitude,
+				}];
+			} else if (this.type === 'edit') {
+				this.markers = [{
+					id: 1,
+					iconPath: '/static/location.png',
+					longitude: this.longitude,
+					latitude: this.latitude,
+				}];
+			}
+		},
+		methods:{
+			onMapChange(e) {
+				if (this.type === 'detail') return;
+				this.lnglat = e.detail;
+				console.log('点击获取经纬度：', this.lnglat)
+				// this.reverseLocation(this.lnglat, 3) //获取百度地图经纬度
+				this.markers = [{
+					id: 1,
+					iconPath: '/static/location.png',
+					longitude: e.detail.longitude,
+					latitude: e.detail.latitude,
+				}]
+			},
+
+			reverseLocation(lnglat, coord_type) {
+				var demo = new QQMapWX({
+					key: 'UQWBZ-FNJ33-3HH3P-3VHYD-GQHXQ-35FBA'
+				});
+				demo.reverseGeocoder({
+					location: {
+						latitude: lnglat.latitude,
+						longitude: lnglat.longitude
+					},
+					coord_type: coord_type, //经纬度类型
+					success: res => {
+						var latitude = res.result.location.lat;
+						var longitude = res.result.location.lng;
+						var markers = [{
+							iconPath: '/static/location.png',
+							longitude: longitude,
+							latitude: latitude,
+							id: "map",
+						}]
+						if (coord_type == 5) {
+							this.markers = markers;
+							this.latitude = latitude;
+							this.longitude = longitude;
+						} else if (coord_type == 3) {
+							uni.setStorageSync('pro-push_lnglat', lnglat)
+						}
+						this.lnglat = {
+							longitude: longitude,
+							latitude: latitude,
+						}
+						console.log('转换百度地图经纬度：', this.lnglat)
+					},
+					fail: error => {    
+						console.error('fail: ',error);   
+					},
+					complete: res => {    
+						console.log(res); 
+					}
+				});
+			},
+
+			goBack() {
+				uni.setStorageSync('pro-lnglat', this.lnglat)
+				setTimeout(() => { uni.navigateBack() })
+			},
+		},
+		
+	}
+</script>
+
+
+<style lang="less">
+.appProblemMap-page, 
+.appProblemMap {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+.goback {
+	// display: flex;
+	justify-content: center;
+	text-align: center;
+	position: absolute;
+    top: 15wx;
+    right: 15wx;
+    background: #fff;
+    width: 56wx;
+	height: 30wx;
+    line-height: 14wx;
+	text-align: center;
+    font-size: 12px;
+    border: 1px solid #ded6d6;
+	border-radius: 5px;
+}
+</style>

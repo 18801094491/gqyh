@@ -1,0 +1,41 @@
+.pageBox {
+  text-align: right;
+  margin-top: 25px;
+
+  .firstPage {
+    cursor: not-allowed;
+    color: rgba(0, 0, 0, 0.25)
+  }
+  a {
+    margin: 0 10px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  span {
+    margin: 0 10px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  .currentIndex {
+    color: red;
+    text-decoration: underline;
+  }
+
+  .aInput {
+    display: inline-block;
+    width: 2em;
+  }
+}
+
+.pagination {
+  text-align: right;
+  margin-top: 25px;
+}
+/deep/ .ant-pagination {
+  margin-right: 160px !important;
+}
+.jumpPagination {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+}

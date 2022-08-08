@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.worklist.mapper.MyWorkListMapper">
+    <select id="selectPageDate" parameterType="com.zcdy.dsc.modules.worklist.entity.WorkList" resultMap="selectPageDateRM">
+        select l.id, l.name, l.code, l.type, l.status,
+            l.start_date, l.over_date, l.team_id,
+            t.team_name, u.realname,
+            (select di.item_text
+            from sys_dict d
+                left join sys_dict_item di on d.id = di.dict_id
+            where d.dict_code = #{query.queryStatusCode} and l.status = di.item_value) statusDes,
+            (select di.item_text
+            from sys_dict d
+                left join sys_dict_item di on d.id = di.dict_id
+            where d.dict_code = #{query.queryTypeCode} and l.type = di.item_value) typeDes
+        from work_list l
+            left join work_team t on l.team_id = t.id
+            left join sys_user u on u.id = l.team_leader_id
+        where l.del_flag = #{query.delFlag}
+            and l.team_id in (select team_id
+                              from work_team_member m
+                                left join sys_user uu on uu.id = m.user_id
+                              where uu.username = #{query.teamMemberUsername}
+                                and m.del_flag = #{query.delFlag} and uu.del_flag = #{query.delFlag})
+        <if test="query.name != null and query.name != ''">
+            and l.name like concat('%',#{query.name},'%')
+        </if>
+        <if test="query.code != null and query.code != ''">
+            and l.code like concat('%',#{query.code},'%')
+        </if>
+        <if test="query.type != null and query.type != ''">
+            and l.type = #{query.type}
+        </if>
+        <if test="query.status != null and query.status != ''">
+            and l.status = #{query.status}
+        </if>
+        <if test="query.searchStatus == 'doing'">
+            and (l.status = '1' or l.status = '2')
+        </if>
+        <if test="query.searchStatus == 'finish'">
+            and (l.status = '3' or l.status = '4')
+        </if>
+        <if test='query.startDate != null'>
+            and l.start_date &gt;= #{query.startDate}
+        </if>
+        <if test='query.overDate != null'>
+            and l.over_date &lt;= #{query.overDate}
+        </if>
+        order by l.create_time desc
+    </select>
+    <resultMap id="selectPageDateRM" type="com.zcdy.dsc.modules.worklist.entity.WorkList">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="team_name" property="teamName"/>
+        <result column="start_date" property="startDate"/>
+        <result column="over_date" property="overDate"/>
+        <result column="team_id" property="teamId"/>
+        <result column="type" property="type"/>
+        <result column="typeDes" property="typeDes"/>
+        <result column="status" property="status"/>
+        <result column="statusDes" property="statusDes"/>
+        <result column="realname" property="leaderName"/>
+    </resultMap>
+    <!--<select id="getOneById" parameterType="com.zcdy.dsc.modules.worklist.entity.WorkList" resultMap="getOneByIdRM">
+
+    </select>
+
+    <resultMap id="getOneByIdRM" type="com.zcdy.dsc.modules.worklist.entity.WorkList">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="teamName" property="teamName"/>
+        <result column="leaderName" property="leaderName"/>
+        <result column="start_date" property="startDate"/>
+        <result column="over_date" property="overDate"/>
+        <result column="statusDes" property="statusDes"/>
+        <result column="type" property="type"/>
+        <result column="typeDes" property="typeDes"/>
+        <result column="planName" property="planName"/>
+        <result column="areaName" property="areaName"/>
+        <result column="routeName" property="routeName"/>
+        <collection property="matterList" ofType="com.zcdy.dsc.modules.worklist.entity.WorkListMatter">
+            <id column="mid" property="id"/>
+            <result column="list_id" property="listId"/>
+            <result column="title" property="title"/>
+            <result column="muSubName" property="subName"/>
+            <result column="sub_time" property="subTime"/>
+            <result column="seq" property="seq"/>
+            <result column="type" property="type"/>
+            <result column="status" property="status"/>
+            <result column="mtypeDes" property="typeDes"/>
+            <result column="mstatusDes" property="statusDes"/>
+            <result column="matter_longitude" property="matterLongitude"/>
+            <result column="matter_latitude" property="matterLatitude"/>
+            <result column="description" property="description"/>
+            <result column="solveName" property="solveName"/>
+            <result column="solve_time" property="solveTime"/>
+            <result column="solve_longitude" property="solveLongitude"/>
+            <result column="solve_latitude" property="solveLatitude"/>
+            <result column="solve_desc" property="solveDesc"/>
+        </collection>
+    </resultMap>-->
+
+</mapper>

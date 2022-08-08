@@ -1,0 +1,415 @@
+.page-homeIndex {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #F2F2F2;
+  z-index: 99999;
+}
+
+/* 左上tabs导航 */
+.page-tabs {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: auto;
+  height: 40px;
+  background: #FFFFFF;
+  border-radius: 3px;
+  box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  }
+  .page-tabs .tab {
+    display: flex;
+    align-items: center;
+    color: #7C7783;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 20px;
+    }
+    .page-tabs .tab:hover {
+      color: #2C66B1;
+    }
+    .page-tabs .tab i {
+      font-size: 22px;
+      margin-right: 4px;
+    }
+    .page-tabs .tab img {
+      width: 22px;
+      height: 22px;
+      margin-right: 6px;
+  }
+
+.page-tabs2{
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  height: auto; 
+  z-index: 2;
+}
+.index-tabs{
+  width: 80px;
+  cursor: pointer;
+}
+.index-tabs img{
+  width: 70px;
+  height: 70px;
+}
+.index-tabs .index-tabs-text{
+  font-size: 14px;
+  color: #FFFFFF;
+  padding: 5px 0 15px 0; 
+  text-align: center;
+} 
+ 
+
+
+/* 页面地图 */
+.page-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.page-map #home-allmap {
+  width: 100%;
+  height: 100%;
+}
+.page-map .map-back {
+  position: absolute;
+  top: 6px;
+  right: 320px;
+  width: 56px;
+  height: 56px;
+  z-index: 10;
+  cursor: pointer;
+}
+
+
+
+
+
+
+/* 右侧数据面板 */
+.page-r-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 300px;
+  overflow: hidden;
+  z-index: 2;
+}
+.page-r-container p {
+  margin-bottom: 0;
+}
+.p-r-tit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 32px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 2;
+}
+.work-order{
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.work-order-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 50%;
+  height: 97px;
+  line-height: 1;
+}
+.work-order-info .num {
+  font-size: 22px;
+}
+.work-order-info .num-b {
+  color: #ffffff;
+}
+.work-order-info .num-r {
+  color: #ffffff;
+}
+.work-order-info .state {
+  margin-top: 6px;
+  color: #ffffff;
+}
+
+.give-an-alarm {
+  line-height: 1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  overflow: hidden;
+}
+.alarm-list {
+  position: relative;
+  bottom: 0px;
+  top: 42px;
+  width: 100%;
+  height: 246px;
+  padding: 0px 17px 50px 10px;
+  margin-top: -36px;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.alarm-list::-webkit-scrollbar{
+  width: 6px;
+}
+.alarm-list::-webkit-scrollbar-thumb{
+      border-radius:5px;
+      background: #094F7F;
+}
+.alarm-list::-webkit-scrollbar-button{
+}
+
+
+.alarm-list p{
+  font-size: 14px;
+  color: #ffffff;
+  text-align: left;
+}
+.alarm-item {
+  padding: 12px 0 ;
+}
+.alarm-item:not(:last-child) {
+  border-bottom: 1px solid #085588;
+}
+.alarm-tit {
+  display: flex;
+  align-items: center;
+  color: #2562AF;
+  font-size: 14px;
+  padding: 5px 0 7px;
+}
+.alarm-tit .tit {
+  max-width: 165px;
+}
+.alarm-tit .hint {
+  width: 30px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  color: #FFFFFF;
+  font-size: 12px;
+  margin-left: 4px;
+  border-radius: 3px;
+}
+.alarm-tit .hint.level0 {
+  background-color: #39C6BE;
+}
+.alarm-tit .hint.level1 {
+  background-color: #F0A400;
+}
+.alarm-tit .hint.level2 {
+  background-color: #F000A4;
+}
+.alarm-tit .hint.level3 {
+  background-color: #DA0000;
+}
+.alarm-des {
+  color: #cccccc;
+  font-size: 12px;
+  padding: 5px 0;
+}
+.hydrology {
+  line-height: 1;
+  user-select: none;
+  min-height: 300px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.hydrology .p-r-tit{
+  height: 38px;
+}
+.h-vChart {
+  height: 220px;
+  overflow: hidden;
+}
+.hydrology .tabs {
+  display: flex;
+  font-size: 12px;
+  color: #ffffff;
+  line-height: 30px;
+  padding: 0 20px 0;
+}
+.hydrology .tab{
+  margin-right: 20px;
+}
+.hydrology .selected {
+  position: relative;
+  color: #2C66B1;
+}
+.hydrology .selected::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #2C66B1;
+}
+.hydrology {
+  line-height: 1;
+  user-select: none;
+}
+
+
+
+
+
+
+
+
+
+
+/* 公用样式 */
+.nowrap-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.fs20{
+  font-size: 20px;
+}
+
+
+
+
+.BMap_cpyCtrl {
+
+  display: none;
+
+}
+
+.anchorBL {
+
+  display: none;
+
+}
+.BMap_pop{
+  text-align: left;
+  opacity: 0.8;
+}
+.BMap_bubble_pop{
+  padding: 0px!important;
+  position: absolute;
+  cursor: default;
+  border: 0px solid rgb(221, 221, 221) !important;
+  background-color: rgba(255, 255, 255,.5) !important;
+  border-radius: 10px;
+  width: 200px !important;
+}
+
+/*地图标题*/
+.BMap_bubble_top{
+  height: 30px;
+}
+.BMap_bubble_title {
+  color: white !important;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: left;
+  padding-left: 5px;
+  padding-top: 5px;
+  border-bottom: 1px solid gray;
+  background-color: #0066b3;
+  width: 200px !important;
+}
+.BMap_bubble_center{
+  width: 200px !important;
+  top: 0px !important;
+  padding: 0px !important;
+
+}
+.BMap_bubble_content{
+  width: 100% !important;
+  top: 0px!important;
+}
+
+/* 消息内容 */
+.BMap_bubble_content {
+  background-color: white;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+/* 内容 */
+.BMap_shadow img{
+  display: none;
+}
+.BMap_pop>div:nth-child(9){
+  width: 150px !important;
+  left: 80px !important;
+}
+.BMap_pop div:nth-child(9) {
+  top: 35px !important;
+  border-radius: 7px;
+}
+
+/* 左上角删除按键 */
+.BMap_pop img {
+  top: 43px !important;
+  left: 215px !important;
+}
+
+.BMap_top {
+  display: none;
+}
+
+.BMap_bottom {
+  display: none;
+}
+
+.BMap_center {
+  display: none;
+}
+
+/* 隐藏边角 */
+.BMap_pop>div:nth-child(1) div {
+  display: none;
+}
+
+.BMap_pop>div:nth-child(3) {
+  display: none;
+}
+
+.BMap_pop>div:nth-child(7) {
+  display: none;
+
+}
+.BMap_pop>div:nth-child(5) {
+  display: none;
+
+}
+.mt10{
+  margin-top: 10px;
+}
+.empty_icon{
+  width: 100%;
+  text-align: center;
+}
+.empty_icon img {
+  width: 120px;
+  margin: 50px auto 0;
+}
+.empty_icon p{
+  font-size: 14px;
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 15px;
+}

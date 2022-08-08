@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.inspection.mapper.InspPlanMapper">
+    <select id="getInspPlanAndPointAndWorkListAnd" parameterType="com.zcdy.dsc.modules.inspection.entity.InspPlan" resultMap="getInspPlanAndPointAndWorkListAndRM">
+        select p.id, p.name, p.code, p.area_id, p.route_id,
+            p.team_id, p.team_leader_id, p.start_date, p.over_date,
+            p.frequency_type, p.frequency_desc, u.username,
+            l.id wlid, l.start_date wlStartDate,
+            pt.id ptid, pt.name ptName, pt.equipment_id,
+            pt.latitude, pt.longitude, pt.notices, rp.seq
+        from work_list_inspection_plan p
+            left join work_list l on l.plan_id = p.id and l.del_flag = #{delFlag} and l.type = #{queryTypeCode} and l.start_date &gt;= #{startDate}
+            left join work_list_inspection_route_points rp on rp.route_id = p.route_id and rp.del_flag = #{delFlag}
+            left join work_list_inspection_point pt on pt.id = rp.point_id and pt.del_flag = #{delFlag}
+            left join sys_user u on p.team_leader_id = u.id and u.del_flag = #{delFlag}
+        where p.status = #{queryStatusCode} and p.del_flag = #{delFlag}
+            and p.start_date &lt;= #{startDate}
+            and p.over_date &gt;= #{startDate}
+    </select>
+
+    <resultMap id="getInspPlanAndPointAndWorkListAndRM" type="com.zcdy.dsc.modules.inspection.entity.InspPlan">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="area_id" property="areaId"/>
+        <result column="route_id" property="routeId"/>
+        <result column="team_id" property="teamId"/>
+        <result column="team_leader_id" property="teamLeaderId"/>
+        <result column="start_date" property="startDate"/>
+        <result column="over_date" property="overDate"/>
+        <result column="frequency_type" property="frequencyType"/>
+        <result column="frequency_desc" property="frequencyDesc"/>
+        <result column="username" property="teamLeaderName"/>
+        <collection property="workListList" ofType="com.zcdy.dsc.modules.worklist.entity.WorkList">
+            <id column="wlid" property="id"/>
+            <result column="wlStartDate" property="startDate"/>
+        </collection>
+        <collection property="pointList" ofType="com.zcdy.dsc.modules.inspection.entity.InspPoint">
+            <id column="ptid" property="id"/>
+            <result column="ptName" property="name"/>
+            <result column="equipment_id" property="equipmentId"/>
+            <result column="latitude" property="latitude"/>
+            <result column="longitude" property="longitude"/>
+            <result column="notices" property="notices"/>
+            <result column="seq" property="seq"/>
+        </collection>
+    </resultMap>
+</mapper>

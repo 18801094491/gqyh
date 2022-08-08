@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkJobRecordMapper">
+
+    <resultMap id="dataSourceItem" type="com.zcdy.dsc.modules.operation.work.entity.WorkJobRecord">
+        <result column="datasourceId" property="datasourceId"/>
+        <result column="datasourceParentId" property="datasourceParentId"/>
+        <collection property="items" column="datasourceId"
+                    ofType="com.zcdy.dsc.modules.operation.work.entity.WorkJobRecordItem">
+            <result column="itemId" property="itemId"/>
+            <result column="itemName" property="itemName"/>
+            <result column="itemOrder" property="itemOrder"/>
+        </collection>
+    </resultMap>
+
+    <select id="getItemsFromDataSouece" resultMap="dataSourceItem">
+        select wjd.id            as datasourceId,
+               wjd.parent_id     as datasourceParentId,
+               wjd.need_enter    as needEnter,
+               wjd.data_type     as dataType,
+               wjd.data_category as dataCategory,
+               wjd.is_leaf       as isLeaf,
+               wjd.need_required    needRequired,
+               wjd.data_unit     as dataUnit,
+               wjd.data_order    as dataOrder,
+               wjri.id           as itemId,
+               wjri.item_name    as itemName,
+               wjri.item_order   as itemOrder
+        from work_job_datasource wjd
+                 left join work_job_datasource_item wjri on wjri.datasource_id = wjd.id
+        where wjd.del_flag = 0
+          and wjd.tpl_id = #{tplId}
+    </select>
+
+
+    <select id="getRecordItems" resultMap="recordItem">
+        SELECT
+        t.id as id,
+        t.datasource_id datasourceId,
+        t.datasource_parent_id datasourceParentId,
+        t.need_enter needEnter,
+        t.data_type dataType,
+        t.need_required needRequired,
+        t.is_leaf isLeaf,
+        t.data_category dataCategory,
+        t.data_unit dataUnit,
+        t.data_order dataOrder,
+        t2.item_name itemName,
+        t2.item_value itemValue
+        FROM
+        work_job_record t
+        LEFT JOIN work_job_record_item t2 ON t2.record_id = t.id
+        where t.del_flag='0'
+        <if test="planId!=null and planId!=''">
+            and t.plan_id=#{planId}
+        </if>
+        <if test="workJobId!=null and workJobId!=''">
+            and t.work_job_point_id=#{workJobId}
+        </if>
+        <if test="userType!=null and userType!=''">
+            and t.user_type=#{userType}
+        </if>
+        order by t.data_order desc
+    </select>
+
+    <resultMap id="recordItem" type="com.zcdy.dsc.modules.operation.work.vo.WorkJobDatasourceTree">
+        <result column="id" property="id"/>
+        <result column="datasourceId" property="key"/>
+        <result column="datasourceParentId" property="parentId"/>
+        <result column="needEnter" property="needEnter"/>
+        <result column="dataType" property="dataType"/>
+        <result column="dataUnit" property="dataUnit"/>
+        <result column="needRequired" property="needRequired"/>
+        <result column="isLeaf" property="isLeaf"/>
+        <result column="dataCategory" property="dataCategory"/>
+        <result column="dataOrder" property="dataOrder"/>
+        <collection property="items" column="id" ofType="com.zcdy.dsc.modules.operation.work.entity.WorkJobRecordItem">
+            <result property="itemName" column="itemName"/>
+            <result property="itemValue" column="itemValue"/>
+            <result property="itemOrder" column="itemOrder"/>
+        </collection>
+    </resultMap>
+
+</mapper>

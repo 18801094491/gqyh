@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.KnowlegeAttachMapper">
+
+    <select id="getlistInfo" resultType="com.zcdy.dsc.modules.operation.equipment.entity.KnowlegeAttach">
+        SELECT  id,file_name,item_id,attach_file FROM  opt_knowlege_attach WHERE  item_id=#{itemId}
+    </select>
+
+    <insert id="addKnowlegeAttachInfo" parameterType="java.util.List">
+        insert into opt_knowlege_attach
+        ( id,file_name,item_id,attach_file)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.fileName},
+            #{item.itemId},
+            #{item.attachFile}
+            )
+        </foreach>
+    </insert>
+
+    <update id="editKnowlegeAttachInfo" parameterType="java.util.List">
+        <foreach collection="list" item="bean" index="index" open="" close="" separator=";">
+            UPDATE opt_knowlege_attach
+            <set>
+                file_name=#{bean.fileName},
+                attach_file=#{bean.attachFile}
+            </set>
+            <where>
+                id = #{bean.id}
+            </where>
+        </foreach>
+    </update>
+
+    <update id="deleteByItemId" parameterType="String">
+        DELETE  FROM  opt_knowlege_attach
+        WHERE  item_id=#{itemId}
+    </update>
+</mapper>

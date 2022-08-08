@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.iot.mapper.IotControMapper">
+
+    <select id="queryPageList" resultType="com.zcdy.dsc.modules.collection.iot.vo.IotControVo">
+        select ic.id as id,
+          ic.equipment_id as equipmentId,
+          ic.contro_name as controName,
+          ic.variable_id as variableId,
+          ivi.variable_name as variableName,
+          ivi.data_type as variableDataType,
+          ic.variable_value as variableValue,
+          ic.create_time as createTime
+          from iot_contro ic
+          left join iot_variable_info ivi on ivi.id=ic.variable_id
+          where 1=1
+          <if test="iotContro.id!=null and iotContro.id!=''">
+              and ic.id=#{iotContro.id}
+          </if>
+          <if test="iotContro.equipmentId!=null and iotContro.equipmentId!=''">
+              and ic.equipment_id=#{iotContro.equipmentId}
+          </if>
+          <if test="iotContro.controName!=null and iotContro.controName!=''">
+              and ic.contro_name=#{iotContro.controName}
+          </if>
+          order by ic.create_time desc
+
+    </select>
+
+</mapper>

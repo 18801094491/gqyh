@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptBomMapper">
+    <!--bom清单分页查询-->
+    <select id="selectPageData" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptBomVo"
+            parameterType="com.zcdy.dsc.modules.operation.equipment.param.OptBomPageParam">
+        select t.id,
+        t.bom_type bomType,
+        t5.name bomTypeName,
+        t.spareparts_id sparepartsId,
+        t2.spareparts_name sparepartsName,
+        t3.name sparepartsModelName,
+        t4.name sparepartsSpcesName
+        from opt_bom t
+        left join opt_spareparts t2 on t2.id = t.spareparts_id
+        left join sys_category t3 on t3.code = t2.spareparts_model
+        left join sys_category t4 on t4.code = t2.spareparts_spces
+        left join sys_category t5 on t5.code = t.bom_type
+        where t.del_flag='0'
+        <if test="param.sparepartsModelName != null and param.sparepartsModelName != ''">
+            and t3.name like concat('%', #{param.sparepartsModelName}, '%')
+        </if>
+        <if test="param.sparepartsSpcesName != null and param.sparepartsSpcesName != ''">
+            and t4.name like concat('%', #{param.sparepartsSpcesName}, '%')
+        </if>
+        <if test="param.sparepartsName != null and param.sparepartsName != ''">
+            and t2.spareparts_name like concat('%', #{param.sparepartsName}, '%')
+        </if>
+        <if test="param.bomType != null and param.bomType != ''">
+            and t.bom_type = #{param.bomType}
+        </if>
+        <if test="param.basicId != null and param.basicId != ''">
+            and t.basic_id = #{param.basicId}
+        </if>
+
+        order by t.create_time desc
+    </select>
+</mapper>

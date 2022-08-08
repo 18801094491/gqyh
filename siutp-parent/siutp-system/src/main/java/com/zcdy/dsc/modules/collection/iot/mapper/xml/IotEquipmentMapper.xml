@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.iot.mapper.IotEquipmentMapper">
+
+    <select id="queryIotEquipmentByName" resultType="com.zcdy.dsc.modules.collection.iot.entity.IotEquipment">
+    select *
+    from iot_equipment
+    where (iot_sn =#{iotSn} or iot_name =#{iotName} )
+        <if test="id!=null and id!=''">
+           and  id!=#{id}
+
+        </if>
+
+    </select>
+
+    <select id="queryPageList" resultType="com.zcdy.dsc.modules.collection.iot.vo.IotEquipmentVo">
+        SELECT
+			ie.id AS id,
+            concat(sc.NAME,oe.equipment_sn) as optCategoryName,
+			ie.iot_sn AS iotSn,
+			ie.iot_name AS iotName,
+			sc.NAME AS iotCategoryName,
+			ie.iot_category AS iotCategory,
+			ie.iot_cycle AS iotCycle,
+			ie.iot_status AS iotStatus,
+			(SELECT count(id) from iot_opt_equipment where iot_id=ie.id) as bindStatus
+		FROM
+			iot_equipment ie
+			LEFT JOIN sys_category sc ON sc.CODE = ie.iot_category
+            left join iot_opt_equipment ioe on ioe.iot_id=ie.id
+            left join opt_equipment oe on oe.id=ioe.opt_id
+            LEFT JOIN sys_category sco ON sco.CODE = oe.equipment_category
+		WHERE
+			1 =1
+			
+        <if test="iotEquipment.id!=null and iotEquipment.id!=''">
+           and  ie.id=#{iotEquipment.id}
+        </if>
+        <if test="iotEquipment.iotSn!=null and iotEquipment.iotSn!=''">
+           and ie.iot_sn like concat('%',#{iotEquipment.iotSn},'%')  
+        </if>
+        <if test="iotEquipment.iotName!=null and iotEquipment.iotName!=''">
+             and ie.iot_name like concat('%',#{iotEquipment.iotName},'%')  
+        </if>
+        <if test="iotEquipment.iotCategory!=null and iotEquipment.iotCategory!=''">
+            and ie.iot_category=#{iotEquipment.iotCategory}
+        </if>
+        <if test="iotEquipment.iotCycle!=null and iotEquipment.iotCycle!=''">
+            and ie.iot_cycle=#{iotEquipment.iotCycle}
+        </if>
+        <if test="iotEquipment.iotStatus!=null and iotEquipment.iotStatus!=''">
+            and ie.iot_status=#{iotEquipment.iotStatus}
+        </if>
+        ORDER BY ie.iot_category  desc
+    </select>
+
+    <update id="updateCycleByCate" >
+        update iot_equipment
+        <set>
+            iot_cycle=#{iotCycle}
+        </set>
+        <where>
+            iot_category=#{iotCategory}
+
+        </where>
+
+    </update>
+
+</mapper>

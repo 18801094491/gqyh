@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.iot.mapper.AlarmRuleMapper">
+
+    <delete id="deleteByAlarmId">
+        delete from iot_equipment_rule_item  where alarm_id=#{alarmId}
+    </delete>
+
+    <insert id="saveAlarmRule" parameterType="com.zcdy.dsc.modules.collection.iot.entity.AlarmRule">
+
+      INSERT INTO iot_equipment_rule_item
+        ( id,
+        alarm_id,
+        variable_id, alarm_rule, alarm_value, create_time )
+
+        VALUES (
+        #{alarmRule.id},
+        #{alarmRule.alarmId},
+        #{alarmRule.variableId},
+        #{alarmRule.alarmRule},
+        #{alarmRule.alarmValue},
+        #{alarmRule.createTime}
+         )
+    </insert>
+
+    <select id="getAlarmRuleByAlarmId" resultType="com.zcdy.dsc.modules.collection.iot.entity.AlarmRule">
+        select
+          ar.id as id,
+          ar.alarm_id as alarmId,
+          a.alarm_name as alarmName,
+          ar.variable_id as variableId ,
+          (SELECT variable_title from iot_variable_info where variable_name=ivi.variable_name) as variableName,
+          (SELECT variable_name from iot_variable_info where variable_name=ivi.variable_name) as variableSn,
+          ar.alarm_rule as alarmRule,
+          vsdi.item_text as alarmRuleName,
+          ar.alarm_value as alarmValue,
+          ar.create_time as createTime
+          from iot_equipment_rule_item ar
+          left join iot_equipment_rule a on a.id=ar.alarm_id
+          left join iot_variable_info ivi on ivi.id=ar.variable_id
+          left join v_sys_dict_item vsdi on vsdi.item_value=ar.alarm_rule and vsdi.dict_code='alarm_rules'
+          where ar.alarm_id=#{id}
+    </select>
+</mapper>

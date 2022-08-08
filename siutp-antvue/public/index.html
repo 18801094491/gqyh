@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <Meta http-equiv="Content-Type" Content="text/html; Charset=BIG5">
+  <title>木龙河流域水环境管理平台</title>
+  <script type="text/javascript" src="js/rem-order.js"></script>
+  <link rel="icon" href="./images/logo.jpg">
+  <link type="text/css" href="css/index.css">
+  <!-- 相关地图包 -->
+  <script type="text/javascript" src="./bdmap/map3.0_init.js"></script>
+  <script type="text/javascript" src="./bdmap/map3.0.js"></script>
+  <script type="text/javascript" src="./bdmap/library/TextIconOverlay_min.js"></script>
+  <script type="text/javascript" src="./bdmap/library/MarkerClusterer_min.js"></script>
+  <script src="http://api.map.baidu.com/api?type=webgl&v=1.0&ak=dpXWsgHGGzam9nnDyPPBm5lSDQWPZs92"></script>
+
+  <script src="//webapi.amap.com/maps?v=1.4.15&key=f99610e64fa1b6429f61cfb2e5f23367&plugin=Map3D,AMap.DistrictSearch"></script>
+  <!-- <script src="//webapi.amap.com/ui/1.1/main.js?v=1.1.1"></script> -->
+  
+  <script type="text/javascript" src="js/bidSection.js"></script>
+  <script src="js/polyfill.js"></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/moment.min.js"></script>
+  <script src="js/jsencrypt.min.js"></script>
+  <script src="js/jsWebControl-1.0.0.min.js"></script>
+  <script src="js/highstock.js"></script>
+  <script src="js/highstockExporting.js"></script>
+  <script type="text/javascript" src="js/highcharts-zh_CN.js"></script>
+  <script type="text/javascript" src="js/echarts.min.js"></script>
+  
+
+  <script>
+	window._CONFIG = {};
+	// window._CONFIG["ip"] = "172.168.10.49";
+	// window._CONFIG["ip"] = "106.12.34.223";
+	window._CONFIG["ip"] = "172.16.1.101";
+	window._CONFIG['domianURL'] = 'http://' + window._CONFIG["ip"] + ':8080/siutp/';
+	// window._CONFIG['monitorURL'] = 'http://' + window._CONFIG["ip"] + ':8089/siutp/monitor';
+	window._CONFIG['monitorURL'] = 'http://' + '172.16.1.106' + ':8089/siutp/monitor';
+	window._CONFIG['reportURL'] = 'http://' + window._CONFIG["ip"] + ':18081/report';
+	window._CONFIG['imgDomainURL'] = window._CONFIG['domianURL'] + '/sys/common/view';
+	window._CONFIG['downloadUrl'] = window._CONFIG['domianURL'] + '/sys/common/download';
+	window._CONFIG['pdfDomainURL'] =  window._CONFIG['domianURL'] + '/sys/common/pdf/pdfPreviewIframe';  
+    // 地图相关 id
+    window.setMapStyle=true;
+    window.setMapStyleId='3d3b406e93b2ad5d72488abd04bb8225';
+   </script>
+    <style>
+      #loader-wrapper .load_title {
+        font-family: 'Open Sans';
+        color: #FFF;
+        font-size: 14px;
+        width: 100%;
+        text-align: center;
+        z-index: 9999999999999;
+        position: absolute;
+        top: 60%;
+        opacity: 1;
+        line-height: 30px;
+      }
+    </style>
+</head>
+
+<body>
+<!-- 加载main.js APP挂载 -->
+<div id="app">
+  <div id="loader-wrapper">
+    <div id="loader"></div>
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+    <div class="load_title">正在加载……,请耐心等待
+
+    </div>
+  </div>
+</div>
+
+<!--加载鼠标绘制工具-->
+<!-- <script type="text/javascript" src="//api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+<link rel="stylesheet" href="//api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" /> -->
+</body>
+</html>

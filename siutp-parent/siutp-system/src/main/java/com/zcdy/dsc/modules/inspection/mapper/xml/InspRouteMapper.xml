@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.inspection.mapper.InspRouteMapper">
+    <select id="getOneById" parameterType="java.lang.String" resultMap="getOneByIdRM">
+        select r.id, r.name, r.code, r.area_id, r.description,
+               rp.id rpId, rp.seq, p.id pointId, p.name pname, p.code pcode,
+               p.longitude, p.latitude
+        from work_list_inspection_route r
+                 left join work_list_inspection_route_points rp on r.id = rp.route_id
+                 left join work_list_inspection_point p on p.id = rp.point_id
+        where p.del_flag = 0 and r.del_flag = 0 and rp.del_flag = 0
+          and r.id = #{id}
+        order by rp.seq
+    </select>
+
+    <resultMap id="getOneByIdRM" type="com.zcdy.dsc.modules.inspection.entity.InspRoute">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="area_id" property="areaId"/>
+        <result column="description" property="description"/>
+        <collection property="pointList" ofType="com.zcdy.dsc.modules.inspection.entity.InspRoutePoint">
+            <id column="pointId" property="id"/>
+            <result column="seq" property="seq"/>
+            <result column="pname" property="name"/>
+            <result column="pcode" property="code"/>
+            <result column="longitude" property="longitude"/>
+            <result column="latitude" property="latitude"/>
+        </collection>
+    </resultMap>
+</mapper>

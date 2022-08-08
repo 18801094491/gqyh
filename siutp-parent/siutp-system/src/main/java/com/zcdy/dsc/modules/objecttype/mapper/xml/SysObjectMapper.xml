@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.objecttype.mapper.SysObjectMapper">
+    <select id="getSysObjectByTreeId" parameterType="java.lang.String" resultMap="getSysObjectByTreeIdRM">
+        select t1.id, t1.name, t1.centre,
+               t2.id tid, t2.tree_id, t2.obj_id,
+               t2.attrs, t2.attrs_name,
+               o.id oid, o.name oname, o.obj_type, o.table_name
+        from opt_label_tree t1
+                 left join sys_object o on o.id = t1.obj_id and o.del_flag = 0
+                 left join opt_attr_tree t2 on t2.tree_id = t1.id and t2.obj_id = o.id and t2.del_flag = 0
+        where t1.id = #{treeId}
+    </select>
+    
+    <resultMap id="getSysObjectByTreeIdRM" type="com.zcdy.dsc.modules.centre.vo.CentreTreeObjectVo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="centre" property="centre"/>
+        <association property="optAttrTreeVo" javaType="com.zcdy.dsc.modules.centre.vo.OptAttrTreeVo">
+            <id column="tid" property="id"/>
+            <result column="tree_id" property="treeId"/>
+            <result column="obj_id" property="objId"/>
+            <result column="attrs" property="attrs"/>
+            <result column="attrs_name" property="attrsName"/>
+        </association>
+        <association property="sysObjectVo" javaType="com.zcdy.dsc.modules.objecttype.vo.SysObjectVo">
+            <id column="oid" property="id"/>
+            <result column="oname" property="name"/>
+            <result column="obj_type" property="objType"/>
+            <result column="table_name" property="tableName"/>
+        </association>
+    </resultMap>
+</mapper>

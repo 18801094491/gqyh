@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.iot.mapper.AlarmMapper">
+    <insert id="saveAlarm" parameterType="com.zcdy.dsc.modules.collection.iot.entity.Alarm" >
+
+      insert into iot_equipment_rule
+        ( id,equipment_id,alarm_name,alarm,and_or,rule_type,alarm_level,alarm_modle_id,create_time,alarm_status)
+        values
+        (#{alarm.id},
+        #{alarm.equipmentId},
+        #{alarm.alarmName},
+        #{alarm.alarm},
+        #{alarm.andOr},
+        #{alarm.alarmRuleType},
+        #{alarm.alarmLevel},
+        #{alarm.alarmModleId},
+        #{alarm.createTime},
+        '1'
+        )
+    </insert>
+
+
+    <update id="updateByAlarmId" parameterType="com.zcdy.dsc.modules.collection.iot.entity.Alarm">
+        update iot_equipment_rule
+        <set>
+            equipment_id=#{alarm.equipmentId},
+            alarm_name=#{alarm.alarmName},
+            alarm=#{alarm.alarm},
+            rule_type=#{alarm.alarmRuleType},
+            alarm_level=#{alarm.alarmLevel},
+            alarm_modle_id=#{alarm.alarmModleId},
+            create_time=#{alarm.createTime}
+        </set>
+        <where>
+            id=#{alarm.id}
+
+        </where>
+
+
+    </update>
+
+
+    <update id="startOrStop" parameterType="com.zcdy.dsc.modules.collection.iot.entity.Alarm">
+        update iot_equipment_rule
+        <set>
+
+            alarm_status=#{alarmStatusCode}
+        </set>
+        <where>
+            id=#{id}
+
+        </where>
+
+
+    </update>
+
+
+
+    <select id="queryPageList" resultType="com.zcdy.dsc.modules.collection.iot.entity.Alarm">
+      select
+      a.id as id,
+      a.equipment_id as equipmentId,
+      ie.iot_name as equipmentName,
+      a.alarm_name as alarmName,
+      a.alarm as alarm,
+      vyn.item_text as isAlarmName,
+      a.rule_type as alarmRuleType,
+      vrt.item_text as alarmRuleTypeValue,
+      a.alarm_level as alarmLevel,
+      vwl.item_text as alarmLevelName,
+      a.alarm_modle_id as alarmModleId,
+      am.alarm_value as alarmModleName,
+      vao.item_text as andOr,
+      case when a.alarm_status='1' then 1 else 0 end as alarmStatus,
+      a.create_time
+      from iot_equipment_rule a
+      left join iot_equipment ie on a.equipment_id=ie.id
+      left join v_sys_dict_item vyn on vyn.item_value=a.alarm and vyn.dict_code='yn'
+      left join v_sys_dict_item vwl on vwl.item_value=a.alarm_level and vwl.dict_code='warn_level'
+      left join v_sys_dict_item vao on vao.item_value=a.and_or and vao.dict_code='and_or'
+      left join v_sys_dict_item vrt on vrt.item_value=a.rule_type and vrt.dict_code='rule_type'
+      left join iot_equipment_message_tpl am on a.alarm_modle_id=am.id
+      where 1=1
+      <if test="alarm.equipmentId!=null and alarm.equipmentId!=''">
+         and a.equipment_id=#{alarm.equipmentId}
+      </if>
+        <if test="alarm.alarmName!=null and alarm.alarmName!=''">
+            and   a.alarm_name=#{alarm.alarmName}
+        </if>
+        <if test="alarm.alarmStatusCode!=null and alarm.alarmStatusCode!=''">
+            and   a.alarm_status=#{alarm.alarmStatusCode}
+        </if>
+       order by  a.alarm_status desc
+    </select>
+
+
+    <select id="getAlarmById" resultType="com.zcdy.dsc.modules.collection.iot.entity.Alarm">
+        select
+        a.id as id,
+        a.equipment_id as equipmentId,
+        ie.iot_name as equipmentName,
+        a.alarm_name as alarmName,
+        a.alarm as alarm,
+        vyn.item_text as isMassName,
+        a.rule_type as alarmRuleType,
+        a.alarm_level as alarmLevel,
+        vwl.item_text as alarmLevelName,
+        a.alarm_modle_id as alarmModleId,
+        am.alarm_title as alarmModleName,
+        a.and_or as andOr,
+        a.create_time
+        from iot_equipment_rule a
+        left join iot_equipment ie on a.equipment_id=ie.id
+        left join v_sys_dict_item vyn on vyn.item_value=a.alarm and vyn.dict_code='yn'
+        left join v_sys_dict_item vwl on vwl.item_value=a.alarm_level and vwl.dict_code='warn_level'
+        left join v_sys_dict_item vao on vao.item_value=a.and_or and vao.dict_code='and_or'
+        left join iot_equipment_message_tpl am on a.alarm_modle_id=am.id
+
+        where 1=1
+        <if test="id!=null and id!=''">
+          and   a.id=#{id}
+        </if>
+
+    </select>
+</mapper>

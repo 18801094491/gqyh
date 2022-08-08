@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptGoodsApplyItemMapper">
+
+    <insert id="insertInfo"  parameterType="java.util.List">
+        insert into opt_goods_apply_item
+        ( id,goods_applyId,store_id,data_id,amount,create_by,create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.goodsApplyid},
+            #{item.storeId},
+            #{item.dataId},
+            #{item.amount},
+            #{item.createBy},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="deleteByApplyId" parameterType="String">
+        UPDATE  opt_goods_apply_item  set del_flag=1 where  goods_applyId=#{applyId}
+    </update>
+</mapper>

@@ -1,0 +1,385 @@
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+p,
+blockquote,
+th,
+td,
+img {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+}
+
+.clear {
+    height: 0px;
+    line-height: 0px;
+    clear: both;
+}
+
+.clearfix:after {
+    content: '';
+    clear: both;
+    display: block
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-size: 12px !important;
+    font-family: "Microsoft Yahei", "Simsun", "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+td {
+    word-break: break-all;
+    word-break: break-word;
+    word-wrap: break-word;
+}
+
+li {
+    list-style: none;
+}
+
+a img {
+    border: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.clear {
+    clear: both;
+    height: 0;
+    font-size: 1px;
+    line-height: 1px;
+    _line-height: 0px;
+}
+
+td {
+    text-align: center;
+}
+
+input {
+    border: 0;
+}
+
+select {
+    border: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+#markBg {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 30;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+}
+
+#markBg.on {
+    visibility: inherit;
+    opacity: 0.5;
+    z-index: 30;
+}
+
+.informationBox {
+    width: 520px;
+    height: 450px;
+    background-color: #fff;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -260px;
+    margin-top: -225px;
+    display: none;
+    box-shadow: 1px 1px 5px #ccc;
+    z-index: 100;
+}
+
+.informationBox .informationTopBox {
+    text-align: right;
+    height: 30px;
+    line-height: 30px;
+    padding-right: 30px;
+    position: relative;
+}
+
+.informationBox .informationTopBox span {
+    cursor: pointer;
+}
+
+.informationTopBodyBox {
+
+    overflow: hidden;
+
+}
+
+.informationTopBodyLeftBox {
+    float: left;
+}
+
+.informationImgBox {
+    background-color: #fff;
+    width: 100px;
+    height: 100px;
+
+//  background: url('~@/assets/fmtupian.jpg') no-repeat;
+    background-size: 100px 100px;
+}
+
+.informationTopBodyRightBox {
+    float: left;
+    margin-left: 20px;
+}
+.informationTopBodyLastRightBox{
+    float: left;
+    margin-left: 20px;
+    height: 147px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.informationListBox {
+    border-top: 3px solid #ccc;
+    padding: 0 30px;
+}
+
+.informationListBox table {
+    width: 100%;
+}
+
+.informationListBox table th {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.informationListBox table th.thone {
+    width: 15%;
+}
+
+.informationListBox table th.thtwo {
+    width: 15%;
+}
+
+.informationListBox table th.ththree {
+    width: 45%;
+}
+
+.informationListBox table th.thfour {
+    width: 15%;
+}
+
+.informationListBox table th.thfive {
+    width: 10%;
+}
+
+.informationListBox table tr td {
+    font-size: 12px;
+    text-align: center;
+}
+
+.informationTopBodyLastRightDivBox label{
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+.informationTopBodyLastRightDivBox span{
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+
+.margin12 .ant-table-thead th{
+    background-color: #448cda;
+    color: #fff;
+}
+.margin12 .ant-table-bordered .ant-table-tbody td {
+    border-right: 1px solid #448cda;
+    border-bottom: 1px solid #448cda;
+}
+.margin12 .ant-table-bordered .ant-table-body>table{
+        border: 1px solid #448cda;
+}
+.margin12 .ant-table-bordered .ant-table-tbody tr:nth-child(even) td{
+    background-color: rgb(250, 249, 249);
+}
+// .BMap_pop .BMap_bottom {
+//     width: 95px !important;
+// }
+
+
+.sider.light.active {
+    background-color: #fff;
+    box-shadow: 2px 116px 8px 0 rgba(29, 35, 41, .05);
+    flex: 0 0 260px !important;
+    max-width: 260px !important;
+    min-width: 260px !important;
+    width: 260px !important;
+}
+.layout .header .user-wrapper .action .avatar{
+    margin: 10px 10px 20px 0 !important;
+}
+
+.margin12{
+    padding:10px 0 0 10px;
+    background-color: #f0f2f5;
+}
+.main{
+    
+}
+
+#login input:-internal-autofill-previewed,
+#login input:-internal-autofill-selected {
+    -webkit-text-fill-color: #999 !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+.flieBox {
+    padding: 10px 20px;
+    width: 100%;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    position: relative;
+    margin-bottom:15px ;
+    p {
+        height: 100%;
+        line-height: 1;
+        margin-bottom: 0;
+    }
+
+    i {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        cursor: pointer;
+    }
+}
+.ant-table-thead>tr>th.ant-table-column-has-actions.ant-table-column-has-sorters:hover{
+    background: #009688 !important;
+}
+
+.ant-table-thead>tr>th.ant-table-column-has-actions.ant-table-column-has-sorters{
+    background: #448cda !important;
+}
+
+.uploadBtn {
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    position: relative;
+    overflow: hidden;
+
+    #uploadBtn {
+        opacity: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        padding: 1000px;
+        cursor: pointer;
+    }
+}
+
+.screenCommonBox{
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 24px 32px 0 32px;
+}
+.ant-drawer-wrapper-body{
+    padding-bottom: 60px;
+}
+.ant-layout-sider .ant-menu-sub.ant-menu-inline > .ant-menu-item{
+//  line-height: 48px;
+//  height: 48px;
+    line-height: 40px;
+    height: 40px;
+    a{
+        font-size: 15px;
+    }
+}
+.ant-layout-sider .ant-menu-item:hover{
+    background-color: #f0faff;
+    
+}
+.screenCommonBox .ant-btn-border{
+    border-color: #40a9ff;
+    color: #40a9ff;
+}
+.screenCommonBox .ant-btn-border:hover {
+    background-color: #ebf7ff;
+}
+.ant-table table{
+    border-collapse: collapse!important;
+}
+
+#allmap{
+    &>div{
+        &>div:nth-of-type(3){
+            display: block !important;
+        }
+        
+    }
+}
+.main{
+    height: 100%;
+}
+
+.table-page-search-submitButtons {
+    float: right;
+}
+.drawer-btns { //右侧弹层底部btn按钮样式
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: right;
+    background: #fff;
+    padding: 10px 16px;
+    border-top: 1px solid #e9e9e9;
+}

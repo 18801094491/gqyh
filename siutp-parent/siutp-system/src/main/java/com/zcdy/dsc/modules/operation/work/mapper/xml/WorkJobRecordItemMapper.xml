@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkJobRecordItemMapper">
+
+    <select id="getWorkRecordInfoByPointId"
+            resultType="com.zcdy.dsc.modules.operation.work.entity.WorkRecordItemInfoEntity">
+        select t2.plan_id    planId,
+               t.id          inspectPointId,
+               t.work_job_id workJobId,
+               t3.tpl_id tplId
+        from work_job_inspect_point t
+                 left join work_job_record t2 on t2.work_job_point_id = t.id
+        left join work_inspection_plan t3 on t3.id=t2.plan_id
+        where t.id = #{itemId}
+    </select>
+</mapper>

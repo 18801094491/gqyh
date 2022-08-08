@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.KnowlegeOperationMapper">
+
+    <select id="getlistInfo" resultType="com.zcdy.dsc.modules.operation.equipment.vo.knowlege.KnowlegeOperationVo">
+        SELECT  id,operation_item,display_order FROM  opt_knowlege_operation WHERE  knowlege_item_id=#{knowlegeItemId}  AND  del_flag=0 ORDER BY display_order
+    </select>
+
+    <insert id="addKnowlegeOperationInfo" parameterType="java.util.List">
+        insert into opt_knowlege_operation
+        ( id,knowlege_item_id,operation_item,display_order,create_by,create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.knowlegeItemId},
+            #{item.operationItem},
+            #{item.displayOrder},
+            #{item.createBy},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="editKnowlegeOperationInfo" parameterType="java.util.List">
+        <foreach collection="list" item="bean" index="index" open="" close="" separator=";">
+            UPDATE opt_knowlege_operation
+            <set>
+                operation_item=#{bean.operationItem},
+                display_Order=#{bean.displayOrder}
+            </set>
+            <where>
+                id = #{bean.id}
+            </where>
+        </foreach>
+    </update>
+
+    <update id="deleteByItemId" parameterType="String">
+        UPDATE  opt_knowlege_operation
+        SET del_flag=1
+        WHERE  knowlege_item_id=#{itemId}
+    </update>
+</mapper>

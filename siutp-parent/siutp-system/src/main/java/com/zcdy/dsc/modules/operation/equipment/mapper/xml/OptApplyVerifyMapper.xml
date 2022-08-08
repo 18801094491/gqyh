@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptApplyVerifyMapper">
+
+    <select id="selectByApplyId" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptApplyVerifyVo">
+          SELECT
+            ta.id id,
+            ta.apply_id applyId,
+            ta.create_time createTime,
+            ta.verify_desc verifyDesc,
+          te.item_text   verifyStatus
+        FROM
+            opt_apply_verify ta
+          LEFT JOIN sys_dict_item te ON  te.dict_id='1225724767564066817' AND te.item_value=ta.verify_status
+        WHERE
+            ta.apply_id =#{id}
+        ORDER BY ta.create_time
+    </select>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.settle.mapper.SettleUseralotMapper">
+
+    <select id="selectUseralotInfo" resultType="com.zcdy.dsc.modules.settle.vo.SettleUseralotVo">
+        SELECT
+        ta.id,
+        ta.customer_id customerId,
+        tb.customer_name customerName,
+        ta.lot_time lotTime,
+        ta.lot_content lotContent,
+        td.realname taskName,
+        ta.task_id taskId,
+        ta.telephone telephone,
+        ta.install_state installState,
+        te.item_text  installStateValue,
+        ta.install_time installTime,
+        ta.purpose purpose,
+        ta.accepidea accepidea
+        FROM
+        settle_useralot ta
+        LEFT JOIN settle_customer tb ON tb.id = ta.customer_id
+        LEFT JOIN sys_dict_item te ON te.dict_id = '1227158511541907458'
+        LEFT JOIN sys_user td ON td.id = ta.task_id
+        WHERE te.item_value = ta.install_state
+        <if test="customerName!=null and customerName!=''">
+            AND  tb.customer_name like concat('%',#{customerName},'%')
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND ta.lot_time &gt;= #{startTime} 
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND ta.lot_time &lt;= #{endTime}
+        </if>
+    </select>
+
+    <select id="getExportXls" resultType="com.zcdy.dsc.modules.settle.vo.SettleUseralotVo">
+        SELECT
+        ta.id,
+        ta.customer_id customerId,
+        tb.customer_name customerName,
+        ta.lot_time lotTime,
+        ta.lot_content lotContent,
+        td.realname taskName,
+        ta.task_id taskId,
+        ta.telephone telephone,
+        ta.install_state installState,
+        te.item_text  installStateValue,
+        ta.install_time installTime,
+        ta.purpose purpose,
+        ta.accepidea accepidea
+        FROM
+        settle_useralot ta
+        LEFT JOIN settle_customer tb ON tb.id = ta.customer_id
+        LEFT JOIN sys_dict_item te ON te.dict_id = '1227158511541907458'
+        LEFT JOIN sys_user td ON td.id = ta.task_id
+        WHERE te.item_value = ta.install_state
+          <if test="customerName!=null and customerName!=''">
+            AND  tb.customer_name like concat('%',#{customerName},'%')
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND ta.lot_time &gt;= #{startTime} 
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND ta.lot_time &lt;= #{endTime}
+        </if>
+    </select>
+</mapper>

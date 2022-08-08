@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkInspectionPointMapper">
+
+    <select id="selectPageData" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkInspectionPointVo">
+        select t.id,
+        t.name,
+        t.attention,
+        t.remark,
+        t.tpl_id tplId,
+        t.equipment_id equipmentId,
+        concat('['+cat.name,'][',equip.equipment_location,'][',equip.equipment_sn,']') as equipmentName,
+        t.data_id dataId,
+        t3.tpl_name tplName,
+        t.category,
+        t2.item_value categoryName,
+        t.latitude,
+        t.longitude
+        from work_inspection_point t
+        left join v_sys_dict_item t2 on t2.item_value = t.category and t2.dict_code = 'inspection_type'
+        left join work_job_template t3 on t3.id = t.tpl_id
+        left join opt_equipment equip on equip.id=t.equipment_id
+        left join sys_category cat on cat.code=equip.equipment_section
+        where t.del_flag='0'
+        <if test="param.name!=null and param.name!=''">
+            and t.name like concat('%',#{param.name},'%')
+        </if>
+        <if test="param.tplId!=null and param.tplId!=''">
+            and t.tpl_id =#{param.tplId}
+        </if>
+        <if test="param.category!=null and param.category!=''">
+            and t.category =#{param.category}
+        </if>
+        order by t.create_time desc
+    </select>
+    <select id="pointDropdown" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkPointDropdown">
+        select t.id,t.name,concat('[',t3.name,'][',t2.equipment_location,'][',t2.equipment_sn,']') as equipmentName from
+        work_inspection_point t
+        left join opt_equipment t2 on t.equipment_id=t2.id
+        left join sys_category t3 on t2.equipment_section=t3.code
+        where t.del_flag='0'
+        <if test="name!=null and name !=''">
+            and t.name like concat('%',#{name},'%')
+        </if>
+        order by t.create_time desc
+    </select>
+</mapper>

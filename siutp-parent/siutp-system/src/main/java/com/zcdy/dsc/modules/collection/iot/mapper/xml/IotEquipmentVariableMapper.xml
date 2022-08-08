@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.iot.mapper.IotEquipmentVariableMapper">
+
+
+    <delete id="removeByIotId" >
+        delete from iot_equipment_variable where variable_id=#{id}
+
+    </delete>
+
+    <select id="queryVariableList" resultType="com.zcdy.dsc.modules.collection.iot.vo.IotEquipmentVariableVo">
+        select
+        ivi.id as id,
+        ivi.variable_name as variableName,
+        ivi.variable_title as variableTitle,
+        ivi.data_type as variableDataType,
+        iev.iot_id as iotId,
+        ie.iot_name as iotName,
+        (case when iot_id is null then 0 else 1 end )as status
+        from  iot_variable_info ivi
+        left join iot_equipment_variable iev on ivi.id=iev.variable_id
+        left join iot_equipment ie on iev.iot_id=ie.id
+        where 1=1
+
+        <if test="iotId!=null and iotId!=''">
+         and iev.iot_id=#{iotId}
+        </if>
+        <if test="variableName!=null and variableName!=''">
+            and ivi.variable_name like CONCAT('%',#{variableName},'%') 
+        </if>
+        <if test="status==1 ">
+            and iev.iot_id is not null
+        </if>
+        <if test="status==0 ">
+            and iev.iot_id is  null
+        </if>
+    </select>
+
+	<!-- group_concat是有长度限制的 -->
+    <select id="queryIotEquipmentVariableVoByCycle" resultType="com.zcdy.dsc.modules.collection.iot.vo.IotEquipmentVariableVo">
+        <!-- 
+        select group_concat(iv.variable_name) as variableName ,ie.iot_cycle as iotCycle
+        from  iot_equipment ie
+        right join iot_equipment_variable iev on ie.id=iev.iot_id
+        right join iot_variable_info iv on iev.variable_id=iv.id
+        where ie.iot_status='1'
+        group by ie.iot_cycle
+         -->
+         select c.variable_name variableName, t.iot_cycle iotCycle from iot_equipment t 
+			LEFT JOIN iot_equipment_variable b on t.id = b.iot_id
+			LEFT JOIN iot_variable_info c on b.variable_id = c.id
+			where t.iot_status = '1'
+			and c.id is not null
+
+    </select>
+</mapper>

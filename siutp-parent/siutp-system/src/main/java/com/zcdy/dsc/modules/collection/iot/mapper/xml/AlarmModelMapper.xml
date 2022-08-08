@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.iot.mapper.AlarmModelMapper">
+    <select id="getAlarmModleByName" resultType="com.zcdy.dsc.modules.collection.iot.entity.AlarmModel">
+        select id as id,alarm_title as alarmTitle,alarm_value as alarmValue,create_time as createTime
+        from iot_equipment_message_tpl
+        where 1=1
+        <if test="id!=null and id!=''">
+            and  id!=#{id}
+        </if>
+        <if test="alarmTitle!=null and alarmTitle!=''">
+            and  alarm_title=#{alarmTitle}
+        </if>
+
+    </select>
+
+</mapper>

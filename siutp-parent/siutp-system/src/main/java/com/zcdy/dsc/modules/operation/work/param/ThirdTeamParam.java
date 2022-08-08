@@ -1,0 +1,60 @@
+package com.zcdy.dsc.modules.operation.work.param;
+
+import org.jeecgframework.poi.excel.annotation.Excel;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 描述: 第三方维修团队新增修改入参
+ * @author：  songguang.jiao
+ * 创建时间：  2020年1月16日 上午9:46:11
+ * 版本号: V1.0
+ */
+@Getter
+@Setter
+@ApiModel(value="ThirdTeamParam",description="第三方维修团队新增修改入参")
+public class ThirdTeamParam {
+
+	/**id*/
+    @ApiModelProperty(value = "id")
+	private java.lang.String id;
+	/**团队名称*/
+	@Excel(name = "团队名称", width = 15)
+    @ApiModelProperty(value = "团队名称")
+	private java.lang.String teamName;
+	/**协议起始日期*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @ApiModelProperty(value = "协议起始日期")
+	private java.util.Date agreeStart;
+	/**协议截至日期*/
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @ApiModelProperty(value = "协议截至日期")
+	private java.util.Date agreeEnd;
+	/**联系人姓名*/
+    @ApiModelProperty(value = "联系人姓名")
+	private java.lang.String contactName;
+	/**联系人电话*/
+    @ApiModelProperty(value = "联系人电话")
+	private java.lang.String contactPhone;
+	/**联系人职位*/
+    @ApiModelProperty(value = "联系人职位")
+	private java.lang.String contactPosition;
+	/**团队评级*/
+    @ApiModelProperty(value = "团队评级")
+	private java.lang.String teamRating;
+	/**资质附件路径*/
+    @ApiModelProperty(value = "资质附件路径")
+	private java.lang.String fileUrl;
+	/**资质附件名称*/
+    @ApiModelProperty(value = "资质附件名称")
+	private java.lang.String fileName;
+	
+}

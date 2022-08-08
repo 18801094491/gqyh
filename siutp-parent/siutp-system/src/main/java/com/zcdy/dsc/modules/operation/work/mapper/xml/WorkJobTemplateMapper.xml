@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkJobTemplateMapper">
+
+    <select id="selectPageData" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkJobTemplateVo">
+        select t.id id,
+        t.tpl_name tplName,
+        t.tpl_type tplType,
+        t1.item_text tplTypeName,
+        t.remark remark,
+        t.tpl_status tplStatus,
+        t2.item_text tplStatusName,
+        su.realname createUser,
+        t.create_time createTime
+        from work_job_template t
+        left join v_sys_dict_item t1 on t1.item_value = t.tpl_type and t1.dict_code = 'job_type'
+        left join v_sys_dict_item t2 on t2.item_value = t.tpl_status and t2.dict_code = 'working_status'
+        left join sys_user su on t.create_by = su.username
+        where t.del_flag='0'
+        <if test="param.tplName!=null and param.tplName!=''">
+            and t.tpl_name like concat('%',#{param.tplName},'%')
+        </if>
+        <if test="param.createUser!=null and param.createUser!=''">
+            and su.realname like concat('%',#{param.createUser},'%')
+        </if>
+        <if test="param.tplType!=null and param.tplType!=''">
+            and t.tpl_type=#{param.tplType}
+        </if>
+        <if test="param.tplStatus!=null and param.tplStatus!=''">
+            and t.tpl_status=#{param.tplStatus}
+        </if>
+        order by t.create_time desc
+    </select>
+</mapper>

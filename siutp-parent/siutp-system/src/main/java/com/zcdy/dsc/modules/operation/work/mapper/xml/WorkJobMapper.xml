@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkJobMapper">
+
+    <select id="selectPageData" resultMap="pageData"
+            parameterType="com.zcdy.dsc.modules.operation.work.param.WokJobPageParam">
+        SELECT
+        t.id,
+        t.work_name workName,
+        t.work_sn workSn,
+        t.route_name routeName,
+        t.route_map_lines routeMapLines,
+        t2.tpl_name tplName,
+        t.tpl_id tplId,
+        t.route_attention routeAttention,
+        t.route_remark routeRemark,
+        t.inspect_time inspectTime,
+        t.finished_time finishedTime,
+        t.work_file workFile,
+        (
+        SELECT
+        GROUP_CONCAT(t4.realname)
+        FROM
+        work_job_inspector t5
+        LEFT JOIN sys_user t4 ON t4.id = t5.user_id
+        WHERE
+        t5.job_id = t.id
+        ) AS inspectorName,
+        t3.realname createBy
+        FROM
+        work_job t
+        LEFT JOIN work_job_template t2 ON t2.id = t.tpl_id
+        LEFT JOIN sys_user t3 ON t3.username = t.create_by
+        where t.del_flag='0'
+        <if test="param.workName!=null and param.workName!=''">
+            and t.work_name like concat('%',#{param.workName},'%')
+        </if>
+        <if test="param.routeName!=null and param.routeName!=''">
+            and t.route_name like concat('%',#{param.routeName},'%')
+        </if>
+        order by t.create_time desc
+    </select>
+
+    <resultMap id="pageData" type="com.zcdy.dsc.modules.operation.work.vo.WorkJobVo">
+        <result column="id" property="id"/>
+        <result column="createBy" property="createBy"/>
+        <result column="workName" property="workName"/>
+        <result column="workSn" property="workSn"/>
+        <result column="tplId" property="tplId"/>
+        <result column="routeName" property="routeName"/>
+        <result column="tplName" property="tplName"/>
+        <result column="inspectorName" property="inspectorName"/>
+        <result column="createBy" property="createBy"/>
+        <collection column="id" property="points" select="findPoint"
+                    ofType="com.zcdy.dsc.modules.operation.work.vo.WorkJobVo$WorkJobPoint">
+            <result column="pointId" property="pointId"/>
+            <result column="pointName" property="pointName"/>
+            <result column="tplId" property="tplId"/>
+        </collection>
+    </resultMap>
+
+    <select id="findPoint" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkJobVo$WorkJobPoint">
+        select t.id pointId, t.name pointName, t.tpl_id tplId
+        from work_job_inspect_point t
+        where t.work_job_id = #{id}
+    </select>
+</mapper>

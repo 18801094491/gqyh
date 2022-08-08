@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkProblemReportMapper">
+
+    <select id="selectMaxSn" resultType="java.lang.String">
+        select max(problem_sn)
+        from work_problem_report
+    </select>
+
+
+    <select id="selectPageData" resultType="com.zcdy.dsc.modules.operation.work.vo.ProblemReportVo">
+        select t.id,
+        t.problem_sn problemSn,
+        t.problem_name problemName,
+        t.problem_type problemType,
+        t2.name problemTypeName,
+        t3.realname createUser,
+        t.create_time createTime,
+        t.equipment_id equipmentId,
+        concat(t5.name, '[', t4.equipment_location, '][', t4.equipment_sn, ']') equipmentName,
+        t.problem_status problemStatus,
+        t.problem_description problemDescription,
+        t6.item_text problemStatusName
+        from work_problem_report t
+        left join sys_category t2 on t2.code = t.problem_type
+        left join sys_user t3 on t3.username = t.create_by
+        left join opt_equipment t4 on t4.id = t.equipment_id
+        left join sys_category t5 on t5.code = t4.equipment_section
+        left join v_sys_dict_item t6 on t6.item_value = t.problem_status and t6.dict_code='warn_status'
+        where t.del_flag='0'
+        <if test="param.problemName!=null and param.problemName!=''">
+            and t.problem_name like concat('%',#{param.problemName},'%')
+        </if>
+        <if test="param.createUser!=null and param.createUser!=''">
+            and t3.realname like concat('%',#{param.createUser},'%')
+        </if>
+        <if test="param.problemType!=null and param.problemType!=''">
+            and t.problem_type =#{param.problemType}
+        </if>
+        <if test="param.startTime!=null and param.startTime!=''">
+            and date_format(t.create_time,'%Y-%m-%d')>=#{param.startTime}
+        </if>
+        <if test="param.endTime!=null and param.endTime!=''">
+            and DATE_FORMAT(t.create_time,'%Y-%m-%d')&lt;=#{param.endTime}
+        </if>
+        <if test="param.problemStatus!=null and param.problemStatus!=''">
+            and t.problem_status =#{param.problemStatus}
+        </if>
+        order by t.create_time desc
+    </select>
+    <select id="problemDropdown" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkPointDropdown">
+        select t.id,t.problem_name name,t2.equipment_id equipmentId,t3.longitude,t3.latitude from work_problem_report t
+        left join gis_equipment t2
+        on t2.equipment_id=t.equipment_id
+        left join gis_model t3 on t3.id=t2.model_id
+        where t.problem_status='1'
+        <if test="name!=null and name!=''">
+            and t.problem_name like concat('%',#{name},'%')
+        </if>
+        order by t.create_time desc
+    </select>
+</mapper>

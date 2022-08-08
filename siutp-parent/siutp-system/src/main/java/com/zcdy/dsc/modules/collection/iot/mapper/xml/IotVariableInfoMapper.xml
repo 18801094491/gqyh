@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.iot.mapper.IotVariableInfoMapper">
+
+
+    <!-- 采集信息查询-->
+    <select id="selectIotVariable" resultType="com.zcdy.dsc.modules.collection.iot.vo.IotVariableInfoVo">
+        SELECT
+        ta.variable_type variableType,
+		(SELECT name FROM sys_category where code=ta.variable_type) as variableTypeName,
+        ta.id id,
+        ta.working_status wostValue,
+        ta.variable_name variableName,
+        ta.variable_title variableTitle,
+        ta.data_type dataType,
+        ta.variable_unit variableUnit,
+        ta.scale scale,
+        ta.remark remark,
+        (case when ta.working_status='1' then 1 else 0 end) workingStatus,
+        tr.item_value readType,
+        tr.item_text readTypeValue,
+        tds.item_text dataTypeValue
+        FROM
+        iot_variable_info ta
+        LEFT JOIN v_sys_dict_item tr on ta.read_type=tr.item_value and tr.dict_code='read_type'
+        LEFT JOIN v_sys_dict_item tds on ta.data_type=tds.item_value and tds.dict_code='data_type'
+        where  ta.del_flag=0
+        <if test="variableName!=null and variableName!=''">
+            and ta.variable_name like concat('%',#{variableName},'%')
+        </if>
+         <if test="variableType!=null and variableType!=''">
+            and ta.variable_type =#{variableType}
+        </if>
+        <if test="variableTitle!=null and variableTitle!=''">
+            and ta.variable_title like concat('%',#{variableTitle},'%')
+        </if>
+        ORDER BY ta.create_time desc
+    </select>
+    <!--查询状态码为 working_status的值-->
+    <select id="selectWorking" resultType="com.zcdy.dsc.modules.system.entity.SysDictItem">
+        SELECT
+            ta2.item_text,
+            ta2.item_value
+        FROM
+            sys_dict_item ta2
+        WHERE
+            ta2.dict_id = (
+                SELECT
+                    ta1.id
+                FROM
+                    sys_dict ta1
+                WHERE
+                    ta1.dict_code = 'working_status'
+            )
+    </select>
+
+    <!-- 导出excel-->
+    <select id="selectExportXls" resultType="com.zcdy.dsc.modules.collection.iot.vo.IotVariableInfoVo">
+        SELECT
+        ta.id id,
+        (SELECT name FROM sys_category where code=ta.variable_type) as variableTypeName,
+        ta.working_status wo_stValue,
+        ta.variable_name variableName,
+        ta.variable_title variableTitle,
+		ta.data_type dataType,
+		ta.variable_unit variableUnit,
+        ta.remark remark,
+        ta.scale scale,
+        tb.item_text workingStatus,
+        tb.item_text workingStatusValue,
+        tr.item_value readType,
+				tr.item_text readTypeValue,
+				tds.item_text dataTypeValue
+        FROM
+        iot_variable_info ta
+        LEFT JOIN  v_sys_dict_item tb on  ta.working_status = tb.item_value and tb.dict_code='working_status'
+        LEFT JOIN v_sys_dict_item tr on ta.read_type=tr.item_value and tr.dict_code='read_type'
+				LEFT JOIN v_sys_dict_item tds on ta.data_type=tds.item_value and tds.dict_code='data_type'
+        where  ta.del_flag=0
+         <if test="variableName!=null and variableName!=''">
+            and ta.variable_name like concat('%',#{variableName},'%')
+        </if>
+         <if test="variableType!=null and variableType!=''">
+            and ta.variable_type =#{variableType}
+        </if>
+        <if test="variableTitle!=null and variableTitle!=''">
+            and ta.variable_title like concat('%',#{variableTitle},'%')
+        </if>
+        ORDER BY ta.create_time desc
+    </select>
+
+    <select id="getIotVariableInfoVoByName" resultType="com.zcdy.dsc.modules.collection.iot.vo.IotVariableInfoVo">
+        select *
+        from iot_variable_info
+        where variable_name =#{variableName}
+        <if test="id!=null and id!=''">
+            and  id!=#{id}
+
+        </if>
+
+
+    </select>
+
+
+    <update id="editWorkingStatus">
+        update iot_variable_info
+        <set>
+            working_status=#{workStatus}
+        </set>
+        <where>
+             id=#{id}
+        </where>
+    </update>
+
+
+</mapper>

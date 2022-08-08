@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkTeamMapper">
+    <select id="getWorkTeamAndMemberListByDate" parameterType="com.zcdy.dsc.modules.operation.work.entity.WorkTeam" resultMap="getWorkTeamAndMemberListByDateRM">
+        <![CDATA[
+        select t.id, t.team_name, m.id memberId, m.user_id, m.member_type, u.username, u.realname
+        from work_team t
+        left join work_team_member m on t.id = m.team_id
+        left join sys_user u on u.id = m.user_id
+        where t.start_time <= #{startTime}
+            and t.over_time >= #{overTime}
+            and t.team_status = 1
+            and t.del_flag = 0
+            and m.del_flag = 0
+            and u.del_flag = 0
+        ]]>
+    </select>
+
+    <resultMap id="getWorkTeamAndMemberListByDateRM" type="com.zcdy.dsc.modules.operation.work.entity.WorkTeam">
+        <id column="id" property="id"/>
+        <result column="team_name" property="teamName"/>
+        <collection property="memberList" ofType="com.zcdy.dsc.modules.operation.work.entity.WorkTeamMember">
+            <id column="memberId" property="id" />
+            <result column="user_id" property="userId"/>
+            <result column="member_type" property="memberType"/>
+            <result column="username" property="username"/>
+            <result column="realname" property="realname"/>
+        </collection>
+    </resultMap>
+</mapper>

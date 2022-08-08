@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkJobDatasourceMapper">
+
+    <select id="tlpDataTree" resultMap="dataInfo">
+        SELECT t.id,
+               t.tpl_id,
+               t.data_name,
+               t.parent_id,
+               t.need_enter,
+               t.is_leaf,
+               t.data_category,
+               t.data_type,
+               t.need_required,
+               t.data_order,
+               t.data_unit
+        FROM work_job_datasource t
+        where t.tpl_id = #{tplId} and t.del_flag='0'
+        order by t.data_order asc
+    </select>
+
+    <resultMap id="dataInfo" type="com.zcdy.dsc.modules.operation.work.vo.WorkJobDatasourceTree">
+        <result column="id" property="value"/>
+        <result column="id" property="key"/>
+        <result column="id" property="id"/>
+        <result column="tpl_id" property="tplId"/>
+        <result column="data_name" property="title"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="need_enter" property="needEnter"/>
+        <result column="is_leaf" property="isLeaf"/>
+        <result column="data_category" property="dataCategory"/>
+        <result column="data_type" property="dataType"/>
+        <result column="need_required" property="needRequired"/>
+        <result column="data_order" property="dataOrder"/>
+        <result column="data_unit" property="dataUnit"/>
+        <collection property="items" column="id" select="selectDataItems"
+                    ofType="com.zcdy.dsc.modules.operation.work.entity.WorkJobDatasourceItem">
+            <result column="id" property="id"/>
+            <result column="item_name" property="itemName"/>
+            <result column="item_order" property="itemOrder"/>
+            <result column="datasource_id" property="datasourceId"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectDataItems" resultType="com.zcdy.dsc.modules.operation.work.entity.WorkJobDatasourceItem">
+        select t.item_name, t.item_order, t.id, t.datasource_id
+        from work_job_datasource_item t
+        where datasource_id = #{id} and t.del_flag='0'
+        order by t.item_order asc
+    </select>
+
+</mapper>

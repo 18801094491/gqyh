@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptSupplierMapper">
+
+	<!-- 供应商分页列表-->
+	<select id="getList" resultType="com.zcdy.dsc.modules.operation.equipment.vo.SupplierVo" >
+		SELECT
+			s.id id,
+			s.supplier_sn supplierSn,
+			s.supplier_name supplierName,
+			s.supplier_cert supplierCert,
+			cat2.name supplierGoods,
+			s.contacts  contacts,
+			s.contacts_phone contactsPhone,
+			cat.name supplier_category,
+			s.supplier_status supplierStatus,
+			s.create_by createBy,
+			s.create_time createTime,
+			s.update_by updateBy,
+			s.update_time updateTime,
+			s.del_flag delFlag	
+		FROM
+			opt_supplier s
+			LEFT JOIN sys_category cat on cat.code=s.supplier_category
+			LEFT JOIN sys_category cat2 on cat2.code=s.supplier_goods
+		where 1=1
+		<if test="supplierSn!=null and supplierSn!=''">
+		and s.supplier_sn like concat('%',#{supplierSn},'%') 
+		</if>
+		<if test="supplierName!=null and supplierName!=''">
+		and s.supplier_name like concat('%',#{supplierName},'%') 
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			and date_format(s.create_time,'%Y-%m-%d')&gt;=#{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+		and DATE_FORMAT(s.create_time,'%Y-%m-%d')&lt;=#{endTime}
+		</if>
+		ORDER BY s.create_time desc
+	</select>
+	
+	
+</mapper>

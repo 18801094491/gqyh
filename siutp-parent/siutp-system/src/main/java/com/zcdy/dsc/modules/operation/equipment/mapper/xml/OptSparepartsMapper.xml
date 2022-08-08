@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptSparepartsMapper">
+    <!--分页查询-->
+    <select id="selectPageData" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptSparepartsVo"
+            parameterType="com.zcdy.dsc.modules.operation.equipment.param.OptSparepartsPageParam">
+        select t.id,
+        t.category_name categoryName,
+        t.spareparts_name sparepartsName,
+        t.spareparts_model sparepartsModel,
+        t2.name sparepartsModelName,
+        t.spareparts_spces sparepartsSpces,
+        t3.name sparepartsSpcesName
+        from opt_spareparts t
+        left join sys_category t2 on t2.code = t.spareparts_model
+        left join sys_category t3 on t3.code = t.spareparts_spces
+        where 1=1
+        <if test="param.sparepartsName!=null and param.sparepartsName!=''">
+            and t.spareparts_name like concat('%', #{param.sparepartsName}, '%')
+        </if>
+        <if test="param.sparepartsModel!=null and param.sparepartsModel!=''">
+            and t.spareparts_model =#{param.sparepartsModel}
+        </if>
+        <if test="param.sparepartsSpces!=null and param.sparepartsSpces!=''">
+            and t.spareparts_spces =#{param.sparepartsSpces}
+        </if>
+        order by t.create_time desc
+    </select>
+
+    <select id="selectSparepartsList"
+            resultType="com.zcdy.dsc.modules.operation.equipment.vo.SparepartsDropdown">
+        select t.id,t.spareparts_name sparepartsName from opt_spareparts t
+        where 1=1
+        <if test="name!=null and name!=''">
+            and t.spareparts_name like concat('%',#{name},'%')
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.centre.mapper.CentreTreeMapper">
+    <sql id="selectEquSql">
+        SELECT
+        eq.id id,
+        eq.equipment_sn equipmentSn,
+        eq.equipment_name equipmentName,
+        eq.equipment_type equipmentTypeCode,
+        cat1.name equipmentType,
+        cat2.name equipmentCategory,
+        eq.equipment_mode equipmentMode,
+        (SELECT name from sys_category where code=eq.equipment_mode) equipmentModeName,
+        eq.equipment_specs equipmentSpecs,
+        (SELECT name from sys_category where code=eq.equipment_specs) equipmentSpecsName,
+        cat3.name equipmentSection,
+        eq.equipment_location equipmentLocation,
+        sup.supplier_name equipmentSupplier,
+        eq.equipment_supplier equipmentSupplierId,
+        cat4.name equipmentStatus,
+        eq.equipment_img equipmentImg,
+        eq.equipment_operating equipmentOperating,
+        eq.equipment_purchase equipmentPurchase,
+        eq.equipment_revstop equipmentRevstop,
+        (SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code =
+        'working_status' )AND item_value = eq.equipment_revstop) as equipmentRevstopText,
+        ol.id as labelId,
+        ISNULL(ot.id) as bindStatus,
+        (select config_value from system_config where config_key='upkeeper.remind.days') countDays,
+        (SELECT GROUP_CONCAT(user_id) FROM opt_equipment_person_responsible where equipment_id=eq.id) as
+        personResponsible,
+        (select GROUP_CONCAT(realname) FROM sys_user WHERE id in (SELECT user_id FROM opt_equipment_person_responsible
+        where equipment_id=eq.id)) as personResponsibleName,
+        ol.label_name as labelName
+        FROM
+        opt_equipment eq
+        LEFT JOIN sys_category cat1 on cat1.code=eq.equipment_type
+        LEFT JOIN sys_category cat2 on cat2.code=eq.equipment_category
+        LEFT JOIN sys_category cat3 on cat3.code=eq.equipment_section
+        LEFT JOIN sys_category cat4 on cat4.code=eq.equipment_status
+        LEFT JOIN opt_supplier sup on sup.id=eq.equipment_supplier
+        left join opt_equipment_label oel on oel.equipment_id = eq.id and valid_status = 1
+        left join opt_label ol on ol.id = oel.label_id
+        left join opt_obj_tree ot on ot.data_id = eq.id and ot.del_flag = '0' and ot.centre = #{param.centre} and ot.obj_id = (select id from sys_object where obj_type = #{param.objType} and del_flag = 0)
+        where eq.del_flag='0'
+    </sql>
+    <sql id="orderby">
+        ORDER BY eq.equipment_section desc,eq.equipment_type desc, eq.equipment_sn asc,eq.equipment_supplier
+        desc,eq.equipment_mode desc
+    </sql>
+
+    <sql id="selectCustSql">
+        SELECT
+            t.id id,
+            t.customer_name customerName,
+            t.customer_sn customerSn,
+            t.customer_address customerAddress,
+            t.customer_type customerType,
+            t1.item_text customerTypeName,
+            t.customer_status customerStatus,
+            t2.item_text customerStatusName,
+            cat1.name priceMode,
+            cat2.name payMode,
+            ISNULL(ot.id) as bindStatus,
+            t.price price,
+            t.create_time createTime,
+            t.custome_duty customeDuty,
+            t.custome_bank_accout customeBankAccout
+        FROM
+            settle_customer t
+                LEFT JOIN sys_category cat1 on t.price_mode=cat1.code
+                LEFT JOIN sys_category cat2 on t.pay_mode=cat2.code
+                LEFT JOIN v_sys_dict_item t1 on t.customer_type=t1.item_value and t1.dict_code='customer_type'
+                LEFT JOIN v_sys_dict_item t2 on t.customer_status=t2.item_value and t2.dict_code='customer_status'
+                left join opt_obj_tree ot on ot.data_id = t.id and ot.del_flag = '0' and ot.centre = #{param.centre} and ot.obj_id = (select id from sys_object where obj_type = #{param.objType} and del_flag = 0)
+        where t.del_flag='0'
+    </sql>
+
+    <select id="selectEquPageListByParam" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptEquipmentModel"
+            parameterType="com.zcdy.dsc.modules.centre.param.EquipmentQueryParam">
+        <include refid="selectEquSql"></include>
+        <if test="param.equipmentSn!=null and param.equipmentSn!=''">
+            and eq.equipment_sn like concat('%',#{param.equipmentSn},'%')
+        </if>
+        <if test="param.equipmentSupplier!=null and param.equipmentSupplier!=''">
+            and eq.equipment_supplier=#{param.equipmentSupplier}
+        </if>
+        <if test="param.equipmentType!=null and param.equipmentType!=''">
+            and eq.equipment_type=#{param.equipmentType}
+        </if>
+        <if test="param.equipmentRevstop!=null and param.equipmentRevstop!=''">
+            and eq.equipment_revstop=#{param.equipmentRevstop}
+        </if>
+        <if test="param.optSection!=null and param.optSection!=''">
+            and eq.equipment_section=#{param.optSection}
+        </if>
+        <if test="param.optLocation!=null and param.optLocation!=''">
+            and eq.equipment_location like concat('%',#{param.optLocation},'%')
+        </if>
+        <if test="param.optName!=null and param.optName!=''">
+            and eq.equipment_name like concat('%',#{param.optName},'%')
+        </if>
+        <if test="param.equipmentCategory!=null and param.equipmentCategory!=''">
+            and eq.equipment_category = #{param.equipmentCategory}
+        </if>
+        <include refid="orderby"></include>
+    </select>
+
+    <select id="getEquListByParentIdNoPage" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptEquipmentModel"
+            parameterType="com.zcdy.dsc.modules.centre.param.EquipmentQueryParam">
+        <include refid="selectEquSql"></include>
+        <if test="param.parentId!=null and param.parentId!=''">
+            and ot.tree_id = #{param.parentId}
+        </if>
+        <include refid="orderby"></include>
+    </select>
+    
+    <select id="getEquListByAllSearch" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptEquipmentModel">
+        SELECT
+            eq.id id,
+            eq.equipment_sn equipmentSn,
+            eq.equipment_name equipmentName,
+            eq.equipment_type equipmentTypeCode,
+            cat1.name equipmentType,
+            cat2.name equipmentCategory,
+            eq.equipment_mode equipmentMode,
+            (SELECT name from sys_category where code=eq.equipment_mode) equipmentModeName,
+            eq.equipment_specs equipmentSpecs,
+            (SELECT name from sys_category where code=eq.equipment_specs) equipmentSpecsName,
+            cat3.name equipmentSection,
+            eq.equipment_location equipmentLocation,
+            sup.supplier_name equipmentSupplier,
+            eq.equipment_supplier equipmentSupplierId,
+            cat4.name equipmentStatus,
+            eq.equipment_img equipmentImg,
+            eq.equipment_operating equipmentOperating,
+            eq.equipment_purchase equipmentPurchase,
+            eq.equipment_revstop equipmentRevstop,
+            (SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code =
+                                                                                                 'working_status' )AND item_value = eq.equipment_revstop) as equipmentRevstopText,
+            ol.id as labelId,
+            ISNULL(ot.id) as bindStatus, ot.id otId,
+            (select config_value from system_config where config_key='upkeeper.remind.days') countDays,
+            (SELECT GROUP_CONCAT(user_id) FROM opt_equipment_person_responsible where equipment_id=eq.id) as
+                personResponsible,
+            (select GROUP_CONCAT(realname) FROM sys_user WHERE id in (SELECT user_id FROM opt_equipment_person_responsible
+                                                                      where equipment_id=eq.id)) as personResponsibleName,
+            ol.label_name as labelName,
+            olt.id oltId, olt.name, olt.parent_id, olt.parent_ids
+        FROM opt_equipment eq
+                 LEFT JOIN sys_category cat1 on cat1.code=eq.equipment_type
+                 LEFT JOIN sys_category cat2 on cat2.code=eq.equipment_category
+                 LEFT JOIN sys_category cat3 on cat3.code=eq.equipment_section
+                 LEFT JOIN sys_category cat4 on cat4.code=eq.equipment_status
+                 LEFT JOIN opt_supplier sup on sup.id=eq.equipment_supplier
+                 left join opt_equipment_label oel on oel.equipment_id = eq.id and valid_status = 1
+                 left join opt_label ol on ol.id = oel.label_id
+                 left join opt_obj_tree ot on ot.data_id = eq.id and ot.del_flag = '0' and ot.centre = #{param.centre} and ot.obj_id = (select id from sys_object where obj_type = #{param.objType} and del_flag = 0)
+                 left join opt_label_tree olt on olt.id = ot.tree_id and olt.del_flag = '0'
+        where eq.del_flag='0'
+        <!--↓↓↓页面查询条件开始↓↓↓-->
+        <if test="param.equipmentSn!=null and param.equipmentSn!=''">
+            and eq.equipment_sn like concat('%',#{param.equipmentSn},'%')
+        </if>
+        <if test="param.equipmentSupplier!=null and param.equipmentSupplier!=''">
+            and eq.equipment_supplier=#{param.equipmentSupplier}
+        </if>
+        <if test="param.equipmentType!=null and param.equipmentType!=''">
+            and eq.equipment_type=#{param.equipmentType}
+        </if>
+        <if test="param.equipmentRevstop!=null and param.equipmentRevstop!=''">
+            and eq.equipment_revstop=#{param.equipmentRevstop}
+        </if>
+        <if test="param.optSection!=null and param.optSection!=''">
+            and eq.equipment_section=#{param.optSection}
+        </if>
+        <if test="param.optLocation!=null and param.optLocation!=''">
+            and eq.equipment_location like concat('%',#{param.optLocation},'%')
+        </if>
+        <if test="param.optName!=null and param.optName!=''">
+            and eq.equipment_name like concat('%',#{param.optName},'%')
+        </if>
+        <if test="param.equipmentCategory!=null and param.equipmentCategory!=''">
+            and eq.equipment_category = #{param.equipmentCategory}
+        </if>
+        <!--↑↑↑页面查询条件结束↑↑↑-->
+        <!--节点查询条件：当前节点或当前节点的子节点-->
+        <if test="param.parentIdList != null and param.parentIdsQueryStr != null">
+            and (olt.id in
+            <foreach collection="param.parentIdList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+                or olt.id in (select id from opt_label_tree where parent_ids REGEXP #{param.parentIdsQueryStr}))
+        </if>
+        <!--↓↓↓属性查询条件开始 字符串类型↓↓↓-->
+        <choose>
+            <when test="attr.equipmentSn=='空值'.toString()">
+                and (eq.equipment_sn is null or eq.equipment_sn = '')
+            </when>
+            <when test="attr.equipmentSn!=null and attr.equipmentSn!=''">
+                and eq.equipment_sn=#{attr.equipmentSn}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentName=='空值'.toString()">
+                and (eq.equipment_name is null or eq.equipment_name = '')
+            </when>
+            <when test="attr.equipmentName!=null and attr.equipmentName!=''">
+                and eq.equipment_name=#{attr.equipmentName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentCategory=='空值'.toString()">
+                and (cat2.name is null or cat2.name = '')
+            </when>
+            <when test="attr.equipmentCategory!=null and attr.equipmentCategory!=''">
+                and cat2.name=#{attr.equipmentCategory}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentType=='空值'.toString()">
+                and (cat1.name is null or cat1.name = '')
+            </when>
+            <when test="attr.equipmentType!=null and attr.equipmentType!=''">
+                and cat1.name=#{attr.equipmentType}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentModeName=='空值'.toString()">
+                and ((SELECT name from sys_category where code=eq.equipment_mode) is null
+                or (SELECT name from sys_category where code=eq.equipment_mode) = '')
+            </when>
+            <when test="attr.equipmentModeName!=null and attr.equipmentModeName!=''">
+                and (SELECT name from sys_category where code=eq.equipment_mode)=#{attr.equipmentModeName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentSpecsName=='空值'.toString()">
+                and ((SELECT name from sys_category where code=eq.equipment_specs) is null
+                or (SELECT name from sys_category where code=eq.equipment_specs) = '')
+            </when>
+            <when test="attr.equipmentSpecsName!=null and attr.equipmentSpecsName!=''">
+                and (SELECT name from sys_category where code=eq.equipment_specs)=#{attr.equipmentSpecsName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentSection=='空值'.toString()">
+                and (cat3.name is null or cat3.name = '')
+            </when>
+            <when test="attr.equipmentSection!=null and attr.equipmentSection!=''">
+                and cat3.name=#{attr.equipmentSection}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentLocation=='空值'.toString()">
+                and (eq.equipment_location is null or eq.equipment_location = '')
+            </when>
+            <when test="attr.equipmentLocation!=null and attr.equipmentLocation!=''">
+                and eq.equipment_location=#{attr.equipmentLocation}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentSupplier=='空值'.toString()">
+                and (sup.supplier_name is null or sup.supplier_name = '')
+            </when>
+            <when test="attr.equipmentSupplier!=null and attr.equipmentSupplier!=''">
+                and sup.supplier_name=#{attr.equipmentSupplier}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentSupplierId=='空值'.toString()">
+                and (eq.equipment_supplier is null or eq.equipment_supplier = '')
+            </when>
+            <when test="attr.equipmentSupplierId!=null and attr.equipmentSupplierId!=''">
+                and eq.equipment_supplier=#{attr.equipmentSupplierId}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentStatus=='空值'.toString()">
+                and (cat4.name is null or cat4.name = '')
+            </when>
+            <when test="attr.equipmentStatus!=null and attr.equipmentStatus!=''">
+                and cat4.name=#{attr.equipmentStatus}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentRevstopText=='空值'.toString()">
+                and ((SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code =
+                'working_status' ) and (item_value = eq.equipment_revstop)) is null
+                or (SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code =
+                'working_status' ) and (item_value = eq.equipment_revstop)) = '')
+            </when>
+            <when test="attr.equipmentRevstopText!=null and attr.equipmentRevstopText!=''">
+                and (SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code =
+                'working_status' ) and (item_value = eq.equipment_revstop))=#{attr.equipmentRevstopText}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentRevstop=='空值'.toString()">
+                and (eq.equipment_revstop is null or eq.equipment_revstop = '')
+            </when>
+            <when test="attr.equipmentRevstop!=null and attr.equipmentRevstop!=''">
+                and eq.equipment_revstop=#{attr.equipmentRevstop}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentImg=='空值'.toString()">
+                and (eq.equipment_img is null or eq.equipment_img = '')
+            </when>
+            <when test="attr.equipmentImg!=null and attr.equipmentImg!=''">
+                and eq.equipment_img=#{attr.equipmentImg}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentSpecs=='空值'.toString()">
+                and (eq.equipment_specs is null or eq.equipment_specs = '')
+            </when>
+            <when test="attr.equipmentSpecs!=null and attr.equipmentSpecs!=''">
+                and eq.equipment_specs=#{attr.equipmentSpecs}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentMode=='空值'.toString()">
+                and (eq.equipment_mode is null or eq.equipment_mode = '')
+            </when>
+            <when test="attr.equipmentMode!=null and attr.equipmentMode!=''">
+                and eq.equipment_mode=#{attr.equipmentMode}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.equipmentTypeCode=='空值'.toString()">
+                and (eq.equipment_type is null or eq.equipment_type = '')
+            </when>
+            <when test="attr.equipmentTypeCode!=null and attr.equipmentTypeCode!=''">
+                and eq.equipment_type=#{attr.equipmentTypeCode}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.bindStatus=='空值'.toString()">
+                and (ISNULL(ot.id) is null or ISNULL(ot.id) = '')
+            </when>
+            <when test="attr.bindStatus!=null and attr.bindStatus!=''">
+                and ISNULL(ot.id)=#{attr.bindStatus}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.labelId=='空值'.toString()">
+                and (ol.id is null or ol.id = '')
+            </when>
+            <when test="attr.labelId!=null and attr.labelId!=''">
+                and ol.id=#{attr.labelId}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.labelName=='空值'.toString()">
+                and (ol.label_name is null or ol.label_name = '')
+            </when>
+            <when test="attr.labelName!=null and attr.labelName!=''">
+                and ol.label_name=#{attr.labelName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.countDays=='空值'.toString()">
+                and ((select config_value from system_config where config_key='upkeeper.remind.days') is null
+                or (select config_value from system_config where config_key='upkeeper.remind.days') = '')
+            </when>
+            <when test="attr.countDays!=null and attr.countDays!=''">
+                and (select config_value from system_config where config_key='upkeeper.remind.days')=#{attr.countDays}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.labelName=='空值'.toString()">
+                and (ol.label_name is null or ol.label_name = '')
+            </when>
+            <when test="attr.labelName!=null and attr.labelName!=''">
+                and ol.label_name=#{attr.labelName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.personResponsible=='空值'.toString()">
+                and ((SELECT GROUP_CONCAT(user_id) FROM opt_equipment_person_responsible where equipment_id=eq.id) is null
+                or (SELECT GROUP_CONCAT(user_id) FROM opt_equipment_person_responsible where equipment_id=eq.id) = '')
+            </when>
+            <when test="attr.personResponsible!=null and attr.personResponsible!=''">
+                and (SELECT GROUP_CONCAT(user_id) FROM opt_equipment_person_responsible where equipment_id=eq.id)=#{attr.personResponsible}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.personResponsibleName=='空值'.toString()">
+                and ((select GROUP_CONCAT(realname) FROM sys_user WHERE id in (SELECT user_id FROM opt_equipment_person_responsible
+                where equipment_id=eq.id)) is null
+                or (select GROUP_CONCAT(realname) FROM sys_user WHERE id in (SELECT user_id FROM opt_equipment_person_responsible
+                where equipment_id=eq.id)) = '')
+            </when>
+            <when test="attr.personResponsibleName!=null and attr.personResponsibleName!=''">
+                and (select GROUP_CONCAT(realname) FROM sys_user WHERE id in (SELECT user_id FROM opt_equipment_person_responsible
+                where equipment_id=eq.id))=#{attr.personResponsibleName}
+            </when>
+        </choose>
+        <!--↑↑↑属性查询条件结束 字符串类型↑↑↑-->
+        <!--↓↓↓属性查询条件结束 日期类型↓↓↓-->
+        <if test="attr.equipmentOperating!=null">
+            and eq.equipment_operating=#{attr.equipmentOperating}
+        </if>
+        <if test="attr.equipmentPurchase!=null">
+            and eq.equipment_purchase=#{attr.equipmentPurchase}
+        </if>
+        <if test="attr.equipmentOperatingEmptyStr=='空值'.toString()">
+            and (eq.equipment_operating is null or eq.equipment_operating = '')
+        </if>
+        <if test="attr.equipmentPurchaseEmptyStr=='空值'.toString()">
+            and (eq.equipment_purchase is null or eq.equipment_purchase = '')
+        </if>
+        <!--↑↑↑属性查询条件结束 日期类型↑↑↑-->
+    </select>
+    
+    <select id="selectCustPageListByParam" resultType="com.zcdy.dsc.modules.settle.vo.CustomerVo"
+            parameterType="com.zcdy.dsc.modules.centre.param.CustQueryParam">
+        <include refid="selectCustSql"></include>
+        <if test='param.customerName!=null and param.customerName!=""' >
+            and t.customer_name like concat('%',#{param.customerName},'%')
+        </if>
+        <if test='param.customerSn!=null  and param.customerSn!=""' >
+            and t.customer_sn like concat('%',#{param.customerSn},'%')
+        </if >
+        <if test='param.startTime!=null and param.startTime!=""'>
+            and  date_format(t.create_time,'%Y-%m-%d')&gt;=#{param.startTime}
+        </if>
+        <if test ='param.endTime!=null and param.endTime!=""'>
+            and  date_format(t.create_time,'%Y-%m-%d')&lt;=#{param.endTime}
+        </if>
+        ORDER BY t.create_time desc
+    </select>
+
+    <select id="getCustListByParentIdNoPage" resultType="com.zcdy.dsc.modules.settle.vo.CustomerVo"
+            parameterType="com.zcdy.dsc.modules.centre.param.CustQueryParam">
+        <include refid="selectCustSql"></include>
+        <if test="param.parentId!=null and param.parentId!=''">
+            and ot.tree_id = #{param.parentId}
+        </if>
+    </select>
+
+    <select id="getCustListByAllSearch" resultType="com.zcdy.dsc.modules.settle.vo.CustomerVo">
+        SELECT
+        t.id id,
+        t.customer_name customerName,
+        t.customer_sn customerSn,
+        t.customer_address customerAddress,
+        t.customer_type customerType,
+        t1.item_text customerTypeName,
+        t.customer_status customerStatus,
+        t2.item_text customerStatusName,
+        cat1.name priceMode,
+        cat2.name payMode,
+        ISNULL(ot.id) as bindStatus,
+        t.price price,
+        t.create_time createTime,
+        t.custome_duty customeDuty,
+        t.custome_bank_accout customeBankAccout
+        FROM
+        settle_customer t
+        LEFT JOIN sys_category cat1 on t.price_mode=cat1.code
+        LEFT JOIN sys_category cat2 on t.pay_mode=cat2.code
+        LEFT JOIN v_sys_dict_item t1 on t.customer_type=t1.item_value and t1.dict_code='customer_type'
+        LEFT JOIN v_sys_dict_item t2 on t.customer_status=t2.item_value and t2.dict_code='customer_status'
+        left join opt_obj_tree ot on ot.data_id = t.id and ot.del_flag = '0' and ot.centre = #{param.centre} and ot.obj_id = (select id from sys_object where obj_type = #{param.objType} and del_flag = 0)
+        left join opt_label_tree olt on olt.id = ot.tree_id and olt.del_flag = '0'
+        where t.del_flag='0'
+        <!--↓↓↓页面查询条件开始↓↓↓-->
+        <if test='param.customerName!=null and param.customerName!=""' >
+            and t.customer_name like concat('%',#{param.customerName},'%')
+        </if>
+        <if test='param.customerSn!=null  and param.customerSn!=""' >
+            and t.customer_sn like concat('%',#{param.customerSn},'%')
+        </if >
+        <if test='param.startTime!=null and param.startTime!=""'>
+            and  date_format(t.create_time,'%Y-%m-%d')&gt;=#{param.startTime}
+        </if>
+        <if test ='param.endTime!=null and param.endTime!=""'>
+            and  date_format(t.create_time,'%Y-%m-%d')&lt;=#{param.endTime}
+        </if>
+        <!--↑↑↑页面查询条件结束↑↑↑-->
+        <!--节点查询条件：当前节点或当前节点的子节点-->
+        <if test="param.parentIdList != null and param.parentIdsQueryStr != null">
+            and (olt.id in
+            <foreach collection="param.parentIdList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            or olt.id in (select id from opt_label_tree where parent_ids REGEXP #{param.parentIdsQueryStr}))
+        </if>
+        <!--↓↓↓属性查询条件开始↓↓↓-->
+        <choose>
+            <when test="attr.customerSn=='空值'.toString()">
+                and (t.customer_sn is null or t.customer_sn = '')
+            </when>
+            <when test="attr.customerSn!=null and attr.customerSn!=''">
+                and t.customer_sn=#{attr.customerSn}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customerName=='空值'.toString()">
+                and (t.customer_name is null or t.customer_name = '')
+            </when>
+            <when test="attr.customerName!=null and attr.customerName!=''">
+                and t.customer_name=#{attr.customerName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customerAddress=='空值'.toString()">
+                and (t.customer_address is null or t.customer_address = '')
+            </when>
+            <when test="attr.customerAddress!=null and attr.customerAddress!=''">
+                and t.customer_address=#{attr.customerAddress}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customerStatusName=='空值'.toString()">
+                and (t2.item_text is null or t2.item_text = '')
+            </when>
+            <when test="attr.customerStatusName!=null and attr.customerStatusName!=''">
+                and t2.item_text=#{attr.customerStatusName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customerTypeName=='空值'.toString()">
+                and (t1.item_text is null or t1.item_text = '')
+            </when>
+            <when test="attr.customerTypeName!=null and attr.customerTypeName!=''">
+                and t1.item_text=#{attr.customerTypeName}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.payMode=='空值'.toString()">
+                and (cat2.name is null or cat2.name = '')
+            </when>
+            <when test="attr.payMode!=null and attr.payMode!=''">
+                and cat2.name=#{attr.payMode}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customeDuty=='空值'.toString()">
+                and (t.custome_duty is null or t.custome_duty = '')
+            </when>
+            <when test="attr.customeDuty!=null and attr.customeDuty!=''">
+                and t.custome_duty=#{attr.customeDuty}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customeBankAccout=='空值'.toString()">
+                and (t.custome_bank_accout is null or t.custome_bank_accout = '')
+            </when>
+            <when test="attr.customeBankAccout!=null and attr.customeBankAccout!=''">
+                and t.custome_bank_accout=#{attr.customeBankAccout}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customerType=='空值'.toString()">
+                and (t.customer_type is null or t.customer_type = '')
+            </when>
+            <when test="attr.customerType!=null and attr.customerType!=''">
+                and t.customer_type=#{attr.customerType}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.priceMode=='空值'.toString()">
+                and (cat1.name is null or cat1.name = '')
+            </when>
+            <when test="attr.priceMode!=null and attr.priceMode!=''">
+                and cat1.name=#{attr.priceMode}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.price=='空值'.toString()">
+                and (t.price is null or t.price = '')
+            </when>
+            <when test="attr.price!=null and attr.price!=''">
+                and t.price=#{attr.price}
+            </when>
+        </choose>
+        <choose>
+            <when test="attr.customerStatus=='空值'.toString()">
+                and (t.customer_status is null or t.customer_status = '')
+            </when>
+            <when test="attr.customerStatus!=null and attr.customerStatus!=''">
+                and t.customer_status=#{attr.customerStatus}
+            </when>
+        </choose>
+        <!--↑↑↑属性查询条件结束↑↑↑-->
+    </select>
+</mapper>

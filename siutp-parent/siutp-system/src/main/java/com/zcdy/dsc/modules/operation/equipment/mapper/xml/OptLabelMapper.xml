@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptLabelMapper">
+    <resultMap id="treeMap" type="com.zcdy.dsc.modules.operation.equipment.vo.OptLabelTreeVo">
+        <id column="id" property="id"/>
+        <collection property="children" column="id"
+                    select="com.zcdy.dsc.modules.operation.equipment.mapper.OptLabelMapper.getTreeByParentId"/>
+    </resultMap>
+
+    <sql id="tree_columns">
+        a.id as `key`,
+        a.id as `id`,
+        a.id as `value`,
+        a.has_child as isLeaf,
+        a.label_name as title,
+        a.parent_id as pid
+    </sql>
+
+    <select id="getTreeByParentId" resultMap="treeMap">
+        select
+        <include refid="tree_columns"/>
+        from opt_label a
+        where 1 = 1
+        and a.parent_id = #{id}
+        and a.del_flag = 0
+        order by CONVERT(a.label_name USING gbk) asc
+    </select>
+
+    <select id="getTreeById" resultMap="treeMap">
+        select
+        <include refid="tree_columns"/>
+        from opt_label a
+        where 1=1
+        and a.id = #{id}
+        and a.del_flag = 0
+    </select>
+
+
+    <select id="getTreeByKeyword" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptLabelTreeVo">
+        select
+        <include refid="tree_columns"/>,
+        length(a.parent_ids) - length(replace(a.parent_ids, ',','')) as labelLevel
+        from opt_label a where INSTR(
+        (
+        select REPLACE(GROUP_CONCAT(ia.parent_ids), ',,', ',')
+        from (
+        SELECT
+        concat(parent_ids, id, ',') as parent_ids
+        FROM
+        opt_label
+        WHERE
+        1 = 1
+        AND label_name LIKE concat( '%', #{keyword}, '%' )
+        AND del_flag = 0
+        ) ia
+        )
+        , a.id) > 0 order by labelLevel
+    </select>
+
+
+</mapper>

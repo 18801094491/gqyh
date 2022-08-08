@@ -1,0 +1,1557 @@
+html {
+    height: 100%
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
+}
+
+li {
+    list-style: none;
+}
+
+.mr15{
+    margin-right: 15px;
+}
+
+.BMap_Marker .BMapLabel {
+    border: none !important;
+    background-color: transparent !important;
+}
+#domeBox{
+    position: relative;
+    
+    .allmapBox {
+        position: relative;
+        width: 100%;
+        float: left;
+        #allmap{
+            width: 100% !important;
+        }
+    }
+    .BMap_mask{
+        // width: 1000px !important;
+    }
+}
+
+.anchorTL{
+    margin: 10px;
+    opacity: 1;
+
+}
+.biaoshi{
+    opacity: 0.9;
+    border-radius: 8px;
+    background-color: #fff !important;
+    border:none !important;
+    padding: 5px 10px!important;
+    min-width: 100px;
+    text-align: left;
+}
+.biaoshi.error{
+    background-color: #FF6666 !important;
+}
+.biaoshi.error p{
+    text-align: center;
+}
+.biaoshi.error span {
+    color: #fff;
+}
+.biaoshi.error i{
+    color: #fff;
+}
+.biaoshi.error strong{
+    color: #fff;
+}
+.biaoshi.error .biaoshijt{
+    border-bottom:30px solid #FF6666;
+}
+.biaoshi p{
+    margin: 0;
+}
+.biaoshi span{
+    color: #000;
+    display: inline-block !important;
+}
+.biaoshi i{
+    color: #000;
+    font-style: normal;
+}
+.biaoshi strong {
+    color: #000;
+    display: inline-block !important;
+}
+.biaoshiTop{
+    height: 30px;
+    background-color: #0066b3;
+    border-radius: 8px 8px 0 0;
+    text-align: left;
+    line-height: 30px;
+    padding-left: 15px;
+}
+.stateSelectionBox {
+    // background: rgba(7, 83, 134, 0.8);
+    overflow: hidden;
+    border-radius: inherit;
+    width:76px;
+    text-align: center;
+    // position: absolute;
+    // left: 10px;
+    // top: 10px;
+    // z-index: 20;
+    box-sizing: border-box;
+    border-radius: 3px;
+    cursor: pointer;
+    text-size-adjust: none;
+    // box-shadow: 0px 9px 9px 0px rgba(0, 0, 0, 0.3);
+}
+
+.stateSelectionBox ul {
+    overflow: hidden;
+    //margin: 0;
+    padding: 0;
+}
+
+.stateSelectionBox ul li {
+    text-align: center;
+    font-size: 12px;
+    // height: 59px;
+    padding: 2px 0;
+    box-sizing: border-box;
+    position: relative;
+    border-top: 1px rgba(236, 240, 247, 0.15) dashed;
+}
+.stateSelectionBox ul li img{
+    // border: 1px solid #336699;
+    // border-radius: 100px;
+    width: 32px;
+    height: 32px;
+    margin-top: 11px;
+}
+.stateSelectionBox ul li a{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+}
+.stateSelectionBox ul li a:hover{
+  color:#7c8196;
+  background-color: #ffffff80;
+}
+.stateSelectionBox ul li p {
+    margin-top: 5px;
+    color: #5f6477;
+    font-size: 14px;
+}
+
+.stateSelectionBox ul li.active {
+
+    // background: linear-gradient(98deg, rgba(2, 113, 224, 1) 0%, rgba(2, 113, 224, 0.96) 1%, rgba(202, 226, 254, 0.96) 2%, rgba(143, 190, 248, 0) 100%);
+    // background-image: linear-gradient(to right, rgba(202, 226, 254, 1), rgba(2, 113, 224, 0.7));
+    // background-color: #fff;
+}
+.stateSelectionBox ul li.active p{
+    color: #4BADF3;
+}
+.stateSelectionBox .allSelect{
+    text-align: center;
+    color: #5f6477;
+    width: 50px;
+    margin: 0 auto;
+    font-size: 14px;
+    padding: 5px 0;
+}
+.stateSelectionBox .allSelect.active{
+    color: #4BADF3;
+
+}
+.stateSelectionUlBox{
+  width: 100%;
+  margin: 0 auto;
+}
+
+#allmap{
+    width: 100%;
+    .wpt{
+        display: block !important;
+    }
+}
+.anchorTL {
+    border: 1px solid #ccc !important;
+    box-shadow: 1px 1px 7px #000;
+}
+.informationTopBox{
+    .close{
+        font-size: 16px;
+        position: absolute;
+        right: 8px;
+        top: 6px;
+        cursor: pointer;
+    }
+}
+.biaoshi{
+    min-height: 18px;
+    span{
+        display: block;
+    }
+}
+
+.domeBox .ant-modal-header {
+    padding: 3px 24px;
+}
+.domeBox .ant-modal-close-x{
+    width: 29px;
+    height: 29px;
+    line-height: 29px;
+}
+.domeBox .ant-modal-footer{
+    padding: 2px 16px;
+}
+
+.BMap_cpyCtrl {
+
+    display: none;
+
+}
+
+.anchorBL {
+
+    display: none;
+
+}
+.BMap_pop{
+    text-align: left;
+    opacity: 0.8;
+}
+
+/*地图标题*/
+.BMap_bubble_title {
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-bottom: 1px solid gray;
+    background-color: #0066b3;
+}
+
+/* 消息内容 */
+.BMap_bubble_content {
+    background-color: white;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+
+/* 内容 */
+.BMap_shadow img{
+    display: none;
+}
+.BMap_pop>div:nth-child(9){
+    width: 150px !important;
+    left: 80px !important;
+}
+.BMap_pop div:nth-child(9) {
+    top: 35px !important;
+    border-radius: 7px;
+}
+
+/* 左上角删除按键 */
+.BMap_pop img {
+    top: 43px !important;
+    left: 215px !important;
+}
+
+.BMap_top {
+    display: none;
+}
+
+.BMap_bottom {
+    display: none;
+}
+
+.BMap_center {
+    display: none;
+}
+
+/* 隐藏边角 */
+.BMap_pop>div:nth-child(1) div {
+    display: none;
+}
+
+.BMap_pop>div:nth-child(3) {
+    display: none;
+}
+
+.BMap_pop>div:nth-child(7) {
+    display: none;
+
+}
+.BMap_pop>div:nth-child(5) {
+    display: none;
+
+}
+
+.biaoshijt{
+    display:inline-block;
+    width:0;
+    height:0;
+    border-left:5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom:30px solid #fff;
+    transform: rotate(180deg) skewX(50deg) ;
+    z-index: 10;
+    
+}
+
+.hierarchyBox{
+    position: absolute;
+    min-width: 340px;
+    right:7rem;
+    font-size: 16px;
+    background: rgba(255,255,255,0.8);
+    padding: 8px 60px;
+    z-index: 30;
+}
+.informationTopBodyRightBox {
+    width: 100%;
+    padding-left: 20px;
+    margin-left: 0 !important;
+}
+
+.informationTopBodyRightDivBox{
+    border-bottom: 1px solid #e3e3e3;
+    padding: 6px 0 4px;
+}
+.informationTopBodyRightDivBox label,
+.informationTopBodyRightDivBox span{
+    float: left;
+}
+.informationTopBodyRightDivBox span {
+    float: right;
+}
+.informationTopBodyRightDivBox span{
+    width: 230px;
+    text-align: right;
+}
+.mapRight_box{
+    position: absolute;
+    right: 0;
+}
+.mapRight_box img{
+    width: 16px;
+    height: 16px;
+}
+.mapRight_box>div{
+    // display: flex;
+    width: 40px;
+    margin-top: 30px;
+    padding: 10px;
+    background:#fff;
+    text-align: center;
+    color: #448cda;
+}
+.mapRightBox{
+    width: 3.5rem;
+    height: 100%;
+    position: absolute;
+    right: 20px;
+    top: 8px;
+}
+.mapRightBox1{
+    width: 4rem;
+    height: 100%;
+    position: absolute;
+    right: 60px;
+    top: 30px;
+
+}
+.mapRightBox2{
+    width: 4rem;
+    height: 100%;
+    position: absolute;
+    right: 60px;
+    top: 260px;
+
+}
+.mapRightBox,.mapRightBox1,.mapRightBox2{
+    
+    .toggle{
+        width: 11px;
+        position: absolute;
+        left: -11px;
+        top: 50%;
+        cursor: pointer;
+        height: 40px;
+        margin-top: -8px;
+        z-index: 50;
+        .toggleBg{
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            // background: -moz-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+            // background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #99CCFF), color-stop(100%, #6699CC));
+            // background: -webkit-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+            // background: -o-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+            // background: -ms-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+            // background: linear-gradient(to bottom, #99CCFF 0%, #6699CC 100%);
+            background-color: #fff;
+            opacity: 0.8;
+        }
+        i{
+            position: absolute;
+            top: 50%;
+            font-size: 16px;
+            margin-top: -8px;
+            color: #6cabe6;
+            left: -3px;
+            &.right{
+                background: url(../../../images/mapIndex/right.png) no-repeat;
+                width: 16px;
+                height: 16px;
+                background-size: 16px 16px;
+            }
+            &.left{
+                background: url(../../../images/mapIndex/left.png) no-repeat;
+                width: 16px;
+                height: 16px;
+                background-size: 16px 16px;
+            }
+        }
+    }
+    &>div{
+        margin-top: 2%;
+    }
+    .h4{
+        // border-bottom: 1px solid #ccc;
+        // padding-left: 10px;
+        // margin-left: 10px;
+        height: 44px;
+        line-height: 25px;
+        font-size: 14px;
+        // margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        align-items: center;
+        
+        a{
+            float:right;
+            margin-right: 15px;
+            font-size: 14px;
+            line-height: 44px;
+            font-size: 12px;
+        }
+        .upDownClass{
+            display: inline-block;
+            cursor: pointer;
+            text-align: center;
+        }
+        .upDownStyle{
+            margin-right: 15px;
+            width: 28px;
+        }
+        .title{
+            font-size: 16px;
+        }
+        .showIcon{
+            position:relative;
+            padding-right: 20px;
+        }
+        .showIcon::after{
+            position: absolute;
+            content: '';
+            width: 1px;
+            height: 14px;
+            top: 36%;
+            right: 10px;
+            background: #ffffff;
+        }
+        .moreCon{
+            display: inline-block;
+            text-align: right;
+        }
+        p{
+            height: 44px;
+            line-height: 44px;
+            display: inline-block;
+            margin-bottom: 0;
+            margin-left: 10px;
+            font-size: 12px;
+        }
+    }
+    .mapRightTableBG {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        // background: -moz-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+        // background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #99CCFF), color-stop(100%, #6699CC));
+        // background: -webkit-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+        // background: -o-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+        // background: -ms-linear-gradient(top, #99CCFF 0%, #6699CC 100%);
+        // background: linear-gradient(to bottom, #99CCFF 0%, #6699CC 100%);
+        // opacity: 0.5;
+        // border: 1px solid #5A9DE2;
+        border-radius: 4%;
+        background: rgba(255,255,255,0.8);
+    }
+    // 告警事件
+    .mapRightTableBox1{
+        height: 200px !important;
+
+    }
+    .mapRightTableBox{
+        // height: 26%;
+        height: 32%;
+//      height: auto;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.45);
+        border-radius: 4%;
+        // border-radius: 10px;
+        
+        .mapRightTableBodyBox{
+            position: relative;
+            z-index: 15;
+            h4{
+                // color: #fff;
+            }
+        }
+        table{border-collapse: collapse; width: 100%;}
+        table tr.trone{
+            border-bottom: 1px solid #ccc;
+            
+        }
+        table tr.baise td{
+            color: #000000;
+        }
+        table tr.hongse td,
+        table tr.hongse td a {
+            color: red;
+        }
+        table tr.chengse td,
+        table tr.chengse td a {
+            color: orange;
+        }
+        table tr.huangse td,
+        table tr.huangse td a {
+            color: yellow;
+        }
+        table .hongse1{
+            width: 20px;
+            display: inline-block;
+            background: red;
+            text-align: center;
+            color: #fff;
+            margin: 7px 10px;
+            border-radius:40%;
+        }
+		/*.top,.top th{border-bottom: none;}*/
+        th,td{line-height: 25px;text-align: center; cursor: pointer;}
+
+        td.one p{
+            width: 3.5rem;
+            text-align: left;
+            padding-left: 10px;
+            // line-height: 30px;
+            line-height: 20px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            margin-bottom: 0;
+            font-size: .14rem;
+        }
+        th.two,td.two{width:10%}
+        th.three,td.three{width:15%}
+        th.four,td.four{width:15%}
+        th.five,td.five{width:15%}
+        th.six,td.six{width:40%}
+        th.six,td.seven{width:20%}
+        .scrollBox{
+            overflow: hidden;
+            padding-top: 0px;
+        }
+		.scroll-box{position: relative;height: 100%;}
+		.tab-scroll{border-top: none;}
+        .tab-scroll td{border-top: none;}
+        .tab-scroll td a{
+            color: #fff;
+        }
+        .tab-scroll2{border-top: none;}
+        .tab-scroll2 td a {
+            color: #fff;
+        }
+		.tab-scroll2 td{border-top: none;}
+    }
+    // 图例
+    .mapRightZXBox{
+        height: 28%;
+//      height: auto;
+        overflow: hidden;
+
+        position: relative;
+        // border-radius: 10px;
+        .mapRightZXBodyBox{
+            position: relative;
+            z-index: 15;
+          .title{
+            width: 56px;
+          }
+        }
+        .tuli{
+            padding-top: 15px;
+            padding-bottom: 15px;
+            overflow: hidden;
+            overflow-y: auto;
+            .legendBox{
+                width: 37px;
+                height: 60px;
+                float: left;
+                text-align: center;
+                margin-left: 10px;
+                p{
+                    margin: 0;
+                    font-size: 12px;
+                    // color: #fff;
+                }
+                img{
+                    width: 20px;
+                    height: 20px;
+                    display: block;
+                    margin: 0 auto;
+                }
+            }
+            .legendBox2{
+                i.zg{
+                    height: 20px;
+                    width: 10px;
+                    background-color: rgb(63, 133, 237);
+                    display: inline-block;
+                    border-radius: 10px;
+                }
+                i.lvhuazhixian {
+                    height: 20px;
+                    width: 5px;
+                    background-color: rgb(63, 133, 237);
+                    display: inline-block;
+                    border-radius: 10px;
+                }
+                i.lvhuazhiguan {
+                    height: 20px;
+                    width: 5px;
+                    background-color: rgb(255, 153, 0);
+                    display: inline-block;
+                    border-radius: 10px;
+                }
+            }
+        }
+        .statisticst{
+            .ant-radio-button-wrapper{
+                padding: 0 10px;
+                height: 26px;
+                line-height: 26px;
+                span{
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+    // 流量统计
+    .mapRightQXBox{
+
+//      height: 39%;
+        overflow: hidden;
+        height: auto;
+        position: relative;
+        border-radius: 10px;
+        .mapRightQXBodyBox{
+            position: relative;
+            z-index: 15;
+            
+        }
+        .mapRightTableBG{
+            border-radius: 10px;
+        }
+    }
+}
+
+.legend{
+    position: absolute;
+    right: 5px;
+    bottom: 20px;
+    background-color: #fff;
+    opacity: 0.8;
+    width: 816px;
+    height: 65px;
+    padding: 5px;
+    .legendBox{
+        width: 37px;
+        height: 40px;
+        float: left;
+        text-align: center;
+        margin-left: 10px;
+        p{
+            margin: 0;
+        }
+        img{
+            width: 20px;
+            height: 20px;
+            display: block;
+            margin: 0 auto;
+        }
+    }
+}
+
+.ioServerBox{
+    position: relative;
+    height: 100%;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    .ioServerOnePcBox{
+        position: relative;
+        width: 40px;
+        height: 40px;
+        background: url(../../../images/mapIndex/pc.png) no-repeat;
+        background-size: 40px 40px;
+        margin: 0 auto;
+        .bling-1 {
+            width: 15px;
+            height: 15px;
+            border-radius: 100%;
+            background-color: rgb(0, 255, 0);
+            animation: blings-1 1s linear infinite;
+            position: absolute;
+            left: 50%;
+            margin-left: -7px;
+            top: 5px;
+            z-index: 3;
+        }
+        .bling-2 {
+            width: 25px;
+            height: 25px;
+            border-radius: 100%;
+            background-color: rgba(0, 255, 0, .8);
+            filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#c800a0e9, endcolorstr=#c800a0e9);
+            animation: blings-2 2s linear infinite;
+            opacity: .5;
+        }
+        .bling-3 {
+            width: 35px;
+            height: 35px;
+            border-radius: 100%;
+            background-color: rgba(0, 255, 0, .5);
+            filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#7f00a0e9, endcolorstr=#7f00a0e9);
+            animation: blings-3 2s linear infinite;
+            position: absolute;
+            left: 50%;
+            margin-left: -18px;
+            top: -5px;
+        }
+        .bling{
+            position: relative;
+        }
+        @keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @-moz-keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @-webkit-keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @-o-keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @-moz-keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @-webkit-keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @-o-keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+        @-moz-keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+        @-webkit-keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+        @-o-keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+    }
+    .ioServerTwoPcBox{
+        position: relative;
+        width: 40px;
+        height: 40px;
+        background: url(../../../images/mapIndex/pc.png) no-repeat;
+        background-size: 40px 40px;
+        margin: 0 auto;
+        .bling-1 {
+            width: 15px;
+            height: 15px;
+            border-radius: 100%;
+            background-color: rgb(0, 255, 0);
+            animation: blings-1 1s linear infinite;
+            position: absolute;
+            left: 50%;
+            margin-left: -7px;
+            top: 5px;
+            z-index: 3;
+        }
+        .bling-2 {
+            width: 25px;
+            height: 25px;
+            border-radius: 100%;
+            background-color: rgba(0, 255, 0, .8);
+            filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#c800a0e9, endcolorstr=#c800a0e9);
+            animation: blings-2 2s linear infinite;
+            opacity: .5;
+        }
+        .bling-3 {
+            width: 35px;
+            height: 35px;
+            border-radius: 100%;
+            background-color: rgba(0, 255, 0, .5);
+            filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#7f00a0e9, endcolorstr=#7f00a0e9);
+            animation: blings-3 2s linear infinite;
+            position: absolute;
+            left: 50%;
+            margin-left: -18px;
+            top: -5px;
+        }
+        .bling{
+            position: relative;
+        }
+        @keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @-moz-keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @-webkit-keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @-o-keyframes blings-1 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+        @keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @-moz-keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @-webkit-keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @-o-keyframes blings-2 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0
+            }
+        }
+        @keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+        @-moz-keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+        @-webkit-keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+        @-o-keyframes blings-3 {
+            0% {
+                transform: scale(0);
+                opacity: 0
+            }
+            25% {
+                transform: scale(0);
+                opacity: 1
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0
+            }
+        }
+    }
+    p{
+        
+        text-align: center;
+        margin:10px 0 0 10px ;
+        color: #fff;
+    }
+    .ioServerPcBox{
+        padding-left: 25px;
+        margin: 10px 0;
+    }
+    .active{
+        .ioServerTwoPcBox{
+            .bling-1 {
+                width: 15px;
+                height: 15px;
+                border-radius: 100%;
+                background-color: rgb(255, 0, 0);
+                animation: blings-1 1s linear infinite;
+                position: absolute;
+                left: 50%;
+                margin-left: -7px;
+                top: 5px;
+                z-index: 3;
+            }
+            .bling-2 {
+                width: 25px;
+                height: 25px;
+                border-radius: 100%;
+                background-color: rgba(255, 0, 0, .8);
+                filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#c800a0e9, endcolorstr=#c800a0e9);
+                animation: blings-2 2s linear infinite;
+                opacity: .5;
+            }
+            .bling-3 {
+                width: 35px;
+                height: 35px;
+                border-radius: 100%;
+                background-color: rgba(255, 0, 0, .5);
+                filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#7f00a0e9, endcolorstr=#7f00a0e9);
+                animation: blings-3 2s linear infinite;
+                position: absolute;
+                left: 50%;
+                margin-left: -18px;
+                top: -5px;
+            }
+            .bling{
+                position: relative;
+            }
+            @keyframes blings-1 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 0
+                }
+            }
+            @-moz-keyframes blings-1 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 0
+                }
+            }
+            @-webkit-keyframes blings-1 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 0
+                }
+            }
+            @-o-keyframes blings-1 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 0
+                }
+            }
+            @keyframes blings-2 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.2);
+                    opacity: 0
+                }
+            }
+            @-moz-keyframes blings-2 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.2);
+                    opacity: 0
+                }
+            }
+            @-webkit-keyframes blings-2 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.2);
+                    opacity: 0
+                }
+            }
+            @-o-keyframes blings-2 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.2);
+                    opacity: 0
+                }
+            }
+            @keyframes blings-3 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.3);
+                    opacity: 0
+                }
+            }
+            @-moz-keyframes blings-3 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.3);
+                    opacity: 0
+                }
+            }
+            @-webkit-keyframes blings-3 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.3);
+                    opacity: 0
+                }
+            }
+            @-o-keyframes blings-3 {
+                0% {
+                    transform: scale(0);
+                    opacity: 0
+                }
+                25% {
+                    transform: scale(0);
+                    opacity: 1
+                }
+                100% {
+                    transform: scale(1.3);
+                    opacity: 0
+                }
+            }
+        }
+        
+    }
+}
+
+.mapRightLLBox{
+    padding: 0 .15rem;
+//  overflow: hidden;
+//  overflow-y: auto;
+    .mapRightLLTopBox{
+        background-color: #003366;
+        border-radius: 5px;
+        margin-bottom: .1rem;
+        ul{
+            &.mapRightLLTopUl2{
+                border-top: 1px solid #ccc;
+            }
+            padding: 5px;
+            margin-bottom: 0px;
+            li{
+                float: left;
+                width: 50%;
+                color: #fff;
+                overflow: hidden;
+                height: .25rem;
+                line-height: .25rem;
+                margin: .05rem 0;
+                &.lione{
+
+                    span{
+                        display: inline-block;
+                        padding: 0 .15rem;
+                        background-color: #3399CC;
+                        border-radius: 100px;
+                        height: .25rem;
+                        overflow: hidden;
+                        font-size: .12rem;
+                    }
+                }
+                &.litwo {
+                    text-align: right;
+
+                    span {
+                        color: #009999;
+                        font-weight: bold;
+                        font-size: .16rem;
+                        margin: 0 .03rem;
+                    }
+                    i{
+                        color: #fff;
+                        font-style: normal;
+                        font-size: .12rem;
+                        margin: 0 .03rem;
+                        sup{
+                            font-size: .12rem;
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    .mapRightLLBottomBox{
+        overflow: hidden;
+        overflow-y: auto;
+        .mapRightLLBottomUl {
+            padding: .05rem;
+            background-color: #003366;
+            border-radius: 5px;
+            margin-bottom: .1rem;
+            li {
+                color: #fff;
+                float: left;
+                width: 60%;
+                text-align: right;
+                height: .25rem;
+                line-height: .25rem;
+                overflow: hidden;
+                span{
+                    font-size: .12rem;
+                    color: #fff;
+                    margin: 0 .03rem;
+                }
+                i{
+                    font-style: normal;
+                    font-size: .12rem;
+                    color: #009999;
+                    margin: 0 .03rem;
+                }
+                em{
+                    font-size: .12rem;
+                    color: #fff;
+                    font-style: normal;
+                    margin: 0 .03rem;
+                    sub {
+                        font-size: .12rem;
+                    }
+                }
+            }
+            li:nth-of-type(1){
+                border-right: 1px solid #ccc;
+                text-align: left;
+                height:.25rem;
+                line-height: .25rem;
+                overflow: hidden;
+                width: 40%;
+                box-sizing: border-box;
+                font-size: .12rem;
+            }
+        }
+    }
+}
+
+.openOrclose{
+    border-bottom: 1px rgba(236, 240, 247, 0.15) dashed;
+    width: 50px;
+    margin: 0 auto;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4BADF3;
+    // padding: 10px 0;
+    &.active{
+        color: #4BADF3;
+    }
+}
+.alarmBox{
+    .ant-form-item-control-wrapper{
+        p{
+            margin-bottom: 0;
+        }
+        
+    }
+    .table-page-search-wrapper .ant-form-inline .ant-form-item{
+        margin-bottom: 10px;
+    }
+}
+//监控
+.BMap_bubble_pop{
+    padding: 0 !important;
+    border: 0 !important;
+}
+.BMap_bubble_top{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    overflow: hidden;
+}
+.BMap_bubble_center{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    overflow: hidden;
+}
+.BMap_bubble_center{
+    height: 67px !important;
+}
+.monitorBox{
+    position: absolute;
+    top: 22%;
+    left: 42%;
+    width: 395px;
+    height: 270px;
+    z-index: 999999;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding: 0 10px ;
+}
+.monitorBox .title{
+    padding: 20px 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    font-size: 14px;
+}
+.monitorBox .title .close{
+    width: 16px;
+    height: 16px;
+    margin-top: -20px;
+}
+.monitorBox .title .close img{
+    width: 16px;
+}
+.monitorBoxCon{
+    width: 100%;
+    height: 200px;
+    background: #ffffff;
+}
+.monitorPage,#playWnd{
+    width: 375px;
+    height: 200px;
+}

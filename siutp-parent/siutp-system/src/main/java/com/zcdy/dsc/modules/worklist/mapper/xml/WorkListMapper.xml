@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.worklist.mapper.WorkListMapper">
+    <select id="getOneById" parameterType="com.zcdy.dsc.modules.worklist.entity.WorkList" resultMap="getOneByIdRM">
+        select l.id, l.name, l.code, t.team_name teamName,
+               l.team_id, l.team_leader_id,
+               plan.name planName, area.name areaName, route.name routeName,
+               u.realname leaderName, l.start_date, l.over_date,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryStatusCode} and l.status = di.item_value) statusDes,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryTypeCode} and l.type = di.item_value) typeDes,
+               m.id mid, m.list_id, m.title, mu.realname muSubName,
+               m.sub_time, m.seq, m.type, m.status,
+               m.matter_longitude, m.matter_latitude, m.description,
+               sol.realname solveName, m.solve_time, m.next_keep_date,
+               m.solve_longitude, m.solve_latitude, m.solve_desc,
+               m.equipment_id, m.matter_type, m.matter_level,
+               equ.equipment_name, m.has_matter,
+               mm.id mmid, mm.matter_type mmMatterType, mm.matter_level mmMatterLevel,
+               mm.description mmDescription,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryMatterTypeCode} and m.type = di.item_value) mtypeDes,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryMatterStatusCode} and m.status = di.item_value) mstatusDes,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryMatterMatterTypeCode} and m.matter_type = di.item_value) matterTypeDes,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryMatterLevelCode} and m.matter_level = di.item_value) matterLevelDes,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryMatterMatterTypeCode} and mm.matter_type = di.item_value) mmMatterTypeDes,
+               (select di.item_text
+                from sys_dict d
+                         left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryMatterLevelCode} and mm.matter_level = di.item_value) mmMatterLevelDes
+        from work_list l
+            left join work_team t on t.id = l.team_id
+            left join sys_user u on u.id = l.team_leader_id
+            left join work_list_matter m on m.list_id = l.id and m.del_flag = #{delFlag}
+            left join sys_user mu on mu.username = m.sub_id
+            left join sys_user sol on sol.username = m.solve_id
+            left join work_list_inspection_plan plan on plan.id = l.plan_id
+            left join work_list_inspection_area area on area.id = l.area_id
+            left join work_list_inspection_route route on route.id = l.route_id
+            left join opt_equipment equ on equ.id = m.equipment_id
+            left join work_list_matter mm on mm.matter_id = m.id and mm.del_flag = #{delFlag}
+        where l.del_flag = #{delFlag} and l.id = #{id}
+        order by m.seq
+    </select>
+
+    <resultMap id="getOneByIdRM" type="com.zcdy.dsc.modules.worklist.entity.WorkList">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="team_leader_id" property="teamLeaderId"/>
+        <result column="team_id" property="teamId"/>
+        <result column="teamName" property="teamName"/>
+        <result column="leaderName" property="leaderName"/>
+        <result column="start_date" property="startDate"/>
+        <result column="over_date" property="overDate"/>
+        <result column="statusDes" property="statusDes"/>
+        <result column="typeDes" property="typeDes"/>
+        <result column="planName" property="planName"/>
+        <result column="areaName" property="areaName"/>
+        <result column="routeName" property="routeName"/>
+        <collection property="matterList" ofType="com.zcdy.dsc.modules.worklist.entity.WorkListMatter">
+            <id column="mid" property="id"/>
+            <result column="list_id" property="listId"/>
+            <result column="title" property="title"/>
+            <result column="muSubName" property="subName"/>
+            <result column="sub_time" property="subTime"/>
+            <result column="seq" property="seq"/>
+            <result column="type" property="type"/>
+            <result column="status" property="status"/>
+            <result column="matter_type" property="matterType"/>
+            <result column="matter_level" property="matterLevel"/>
+            <result column="matterTypeDes" property="matterTypeDes"/>
+            <result column="matterLevelDes" property="matterLevelDes"/>
+            <result column="mtypeDes" property="typeDes"/>
+            <result column="mstatusDes" property="statusDes"/>
+            <result column="matter_longitude" property="matterLongitude"/>
+            <result column="matter_latitude" property="matterLatitude"/>
+            <result column="description" property="description"/>
+            <result column="solveName" property="solveName"/>
+            <result column="solve_time" property="solveTime"/>
+            <result column="next_keep_date" property="nextKeepDate"/>
+            <result column="solve_longitude" property="solveLongitude"/>
+            <result column="solve_latitude" property="solveLatitude"/>
+            <result column="equipment_id" property="equipmentId"/>
+            <result column="equipment_name" property="equipmentName"/>
+            <result column="solve_desc" property="solveDesc"/>
+            <result column="has_matter" property="hasMatter"/>
+            <association property="newMatter" javaType="com.zcdy.dsc.modules.worklist.entity.WorkListMatter">
+                <id column="mmid" property="id"/>
+                <result column="mmMatterType" property="matterType"/>
+                <result column="mmMatterLevel" property="matterLevel"/>
+                <result column="mmMatterTypeDes" property="matterTypeDes"/>
+                <result column="mmMatterLevelDes" property="matterLevelDes"/>
+                <result column="mmDescription" property="description"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="getTimeoutAndNoCompleteWorkList" parameterType="com.zcdy.dsc.modules.worklist.entity.WorkList" resultMap="getTimeoutAndNoCompleteWorkListRM">
+        select l.id, l.type, l.status, l.start_date, l.over_date,
+            m.id mid, m.list_id, m.type mtype, m.status mstatus
+        from work_list l
+            left join work_list_matter m on m.list_id = l.id
+        where l.status &lt; #{queryStatusCode}
+            and l.del_flag = #{delFlag} and m.del_flag = #{delFlag}
+            and l.over_date &lt; #{overDate}
+    </select>
+
+    <resultMap id="getTimeoutAndNoCompleteWorkListRM" type="com.zcdy.dsc.modules.worklist.entity.WorkList">
+        <id column="id" property="id"/>
+        <result column="start_date" property="startDate"/>
+        <result column="over_date" property="overDate"/>
+        <result column="type" property="type"/>
+        <result column="status" property="status"/>
+        <collection property="matterList" ofType="com.zcdy.dsc.modules.worklist.entity.WorkListMatter">
+            <id column="mid" property="id"/>
+            <result column="list_id" property="listId"/>
+            <result column="mtype" property="type"/>
+            <result column="mstatus" property="status"/>
+        </collection>
+    </resultMap>
+
+    <select id="getWorkListAndTeamMember" parameterType="com.zcdy.dsc.modules.worklist.entity.WorkList" resultMap="getWorkListAndTeamMemberRM">
+        select w.id, w.name, w.start_date, w.over_date,
+               t.id team_id, t.team_name,
+               m.user_id,
+               u.username, u.realname
+        from work_list w
+            left join work_team t on w.team_id = t.id and t.del_flag = #{delFlag}
+            left join work_team_member m on m.team_id = t.id and m.del_flag = #{delFlag}
+            left join sys_user u on u.id = m.user_id and u.del_flag = #{delFlag}
+        where w.del_flag = #{delFlag}
+            and w.start_date &lt;= #{startDate}
+            and w.over_date &gt;= #{overDate}
+        order by w.id
+    </select>
+
+    <resultMap id="getWorkListAndTeamMemberRM" type="com.zcdy.dsc.modules.worklist.entity.WorkList">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="team_id" property="teamId"/>
+        <result column="team_name" property="teamName"/>
+        <collection property="userList" ofType="com.zcdy.dsc.modules.system.entity.SysUser">
+            <id column="user_id" property="id"/>
+            <result column="username" property="username"/>
+            <result column="realname" property="realname"/>
+        </collection>
+    </resultMap>
+
+    <select id="getWorkListMatterAndTeamMember" parameterType="com.zcdy.dsc.modules.worklist.entity.WorkList" resultMap="getWorkListMatterAndTeamMemberRM">
+        select w.id, w.name, w.start_date, w.over_date,
+            t.id team_id, t.team_name,
+            m.user_id,
+            u.username, u.realname,
+            ma.id mid, ma.title, ma.matter_latitude, ma.matter_longitude
+        from work_list w
+            left join work_list_matter ma on ma.list_id = w.id and ma.del_flag = #{delFlag}
+            left join work_team t on w.team_id = t.id and t.del_flag = #{delFlag}
+            left join work_team_member m on m.team_id = t.id and m.del_flag = #{delFlag}
+            left join sys_user u on u.id = m.user_id and u.del_flag = #{delFlag}
+        where w.del_flag = #{delFlag}
+            and w.start_date &lt;= #{startDate}
+            and w.over_date &gt;= #{overDate}
+        order by w.id, user_id, ma.id
+    </select>
+
+    <resultMap id="getWorkListMatterAndTeamMemberRM" type="com.zcdy.dsc.modules.worklist.entity.WorkList">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="team_id" property="teamId"/>
+        <result column="team_name" property="teamName"/>
+        <collection property="userList" ofType="com.zcdy.dsc.modules.system.entity.SysUser">
+            <id column="user_id" property="id"/>
+            <result column="username" property="username"/>
+            <result column="realname" property="realname"/>
+        </collection>
+        <collection property="matterList" ofType="com.zcdy.dsc.modules.worklist.entity.WorkListMatter">
+            <id column="mid" property="id"/>
+            <result column="title" property="title"/>
+            <result column="matter_latitude" property="matterLatitude"/>
+            <result column="matter_longitude" property="matterLongitude"/>
+        </collection>
+    </resultMap>
+</mapper>

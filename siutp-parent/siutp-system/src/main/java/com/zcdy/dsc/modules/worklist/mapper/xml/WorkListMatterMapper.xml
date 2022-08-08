@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.worklist.mapper.WorkListMatterMapper">
+    <select id="getOneById" parameterType="com.zcdy.dsc.modules.worklist.entity.WorkListMatter" resultMap="getOneByIdRM">
+        select m.id, m.type, sub.realname subName, m.sub_time,
+               m.title, m.description, m.matter_longitude,
+               m.matter_latitude, m.equipment_id, m.status,
+               m.solve_time, sol.realname solveName,
+               m.matter_type, m.matter_level,
+               m.solve_longitude, m.solve_latitude, m.solve_desc,
+               f.id fid, f.file_type, f.url, f.matter_id,
+               equ.equipment_name,
+               (select di.item_text
+                from sys_dict d
+                    left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryTypeCode} and m.type = di.item_value) typeDes,
+               (select di.item_text
+                from sys_dict d
+                    left join sys_dict_item di on d.id = di.dict_id
+                where d.dict_code = #{queryStatusCode} and m.status = di.item_value) statusDes,
+               (select di.item_text
+               from sys_dict d
+               left join sys_dict_item di on d.id = di.dict_id
+               where d.dict_code = #{queryMatterTypeCode} and m.matter_type = di.item_value) matterTypeDes,
+               (select di.item_text
+               from sys_dict d
+               left join sys_dict_item di on d.id = di.dict_id
+               where d.dict_code = #{queryMatterLevelCode} and m.matter_level = di.item_value) matterLevelDes
+        from work_list_matter m
+                 left join work_list_matter_file f on f.matter_id = m.id and f.del_flag = #{delFlag}
+                 left join sys_user sub on m.sub_id = sub.username
+                 left join sys_user sol on m.solve_id = sol.username
+                 left join opt_equipment equ on equ.id = m.equipment_id
+        where m.del_flag = #{delFlag}
+            and m.id = #{id}
+    </select>
+
+    <resultMap id="getOneByIdRM" type="com.zcdy.dsc.modules.worklist.entity.WorkListMatter">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="matter_longitude" property="matterLongitude"/>
+        <result column="matter_latitude" property="matterLatitude"/>
+        <result column="equipment_id" property="equipmentId"/>
+        <result column="equipment_name" property="equipmentName"/>
+        <result column="subName" property="subName"/>
+        <result column="sub_time" property="subTime"/>
+        <result column="solveName" property="solveName"/>
+        <result column="solve_time" property="solveTime"/>
+        <result column="matter_type" property="matterType"/>
+        <result column="matter_level" property="matterLevel"/>
+        <result column="matterTypeDes" property="matterTypeDes"/>
+        <result column="matterLevelDes" property="matterLevelDes"/>
+        <result column="status" property="status"/>
+        <result column="typeDes" property="typeDes"/>
+        <result column="statusDes" property="statusDes"/>
+        <result column="solve_longitude" property="solveLongitude"/>
+        <result column="solve_latitude" property="solveLatitude"/>
+        <result column="solve_desc" property="solveDesc"/>
+        <collection property="fileList" ofType="com.zcdy.dsc.modules.worklist.entity.WorkListMatterFile">
+            <id column="fid" property="id"/>
+            <result column="file_type" property="fileType"/>
+            <result column="matter_id" property="matterId"/>
+            <result column="url" property="url"/>
+        </collection>
+    </resultMap>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.collection.gis.mapper.GisEquipmentMapper">
+
+	<!--通过modelId查询关联表  -->
+	<select id="getGisEquipmentByModelId" resultType="com.zcdy.dsc.modules.collection.gis.entity.GisEquipment">
+			select * from gis_equipment WHERE model_id=#{modelId} limit 1
+	</select>
+
+	<!--通过equipId查询关联表  -->
+	<select id="getEByEquipId" resultType="com.zcdy.dsc.modules.collection.gis.entity.GisEquipment">
+			select * from gis_equipment where equipment_id=#{equipId} limit 1
+	</select>
+	
+	<!--解绑gis跟设备关联  -->
+	<update id="unbindGisData">
+			update	gis_equipment set equipment_id=null where model_id=#{modelId}
+	</update>
+</mapper>

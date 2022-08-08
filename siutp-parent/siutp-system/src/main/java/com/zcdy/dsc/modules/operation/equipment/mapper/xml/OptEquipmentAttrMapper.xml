@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptEquipmentAttrMapper">
+
+	<!-- 通过设备id查询附属信息列表 -->
+	<select id="queryAttrList" resultType="com.zcdy.dsc.modules.collection.gis.vo.EquipmentAttrVO">
+		 select attribute_cn attributeCn,
+		 		attribute_val attributeVal
+		 from opt_equipment_attr
+		where  equipment_id=#{equipmentId}
+	</select>
+
+</mapper>

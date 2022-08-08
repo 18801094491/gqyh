@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.KnowlegeItemMapper">
+
+    <insert id="addKnowlegeItemInfo"  parameterType="java.util.List">
+        insert into opt_knowlege_item
+        ( id,knowlege_id,operation_name,create_by,create_time,update_by,update_time,del_flag)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.knowlegeId},
+            #{item.operationName},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.delFlag}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

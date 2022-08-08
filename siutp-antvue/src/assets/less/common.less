@@ -1,0 +1,77 @@
+
+.ant-table table{
+    border-collapse: collapse;
+}
+/*列表上方操作按钮区域*/
+.ant-card-body .table-operator {
+  margin-bottom: 18px;
+}
+/** Button按钮间距 */
+.table-operator .ant-btn {
+  margin-right: 6px
+}
+/*列表td的padding设置 可以控制列表大小*/
+.ant-table-tbody .ant-table-row td {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+/*列表页面弹出modal*/
+.ant-modal-cust-warp {
+  height: 100%
+}
+
+/*弹出modal Y轴滚动条*/
+.ant-modal-cust-warp .ant-modal-body {
+  height: calc(100% - 110px) !important;
+  overflow-y: auto
+}
+
+/*弹出modal 先有content后有body 故滚动条控制在body上*/
+.ant-modal-cust-warp .ant-modal-content {
+  height: 90% !important;
+  overflow-y: hidden
+}
+/*列表中有图片的加这个样式 参考用户管理*/
+.anty-img-wrap {
+  height: 25px;
+  position: relative;
+}
+.anty-img-wrap > img {
+  max-height: 100%;
+}
+/*列表中范围查询样式*/
+.query-group-cust{width: calc(50% - 10px)}
+.query-group-split-cust:before{content:"~";width: 20px;display: inline-block;text-align: center}
+
+.ant-table-thead>tr>th.ant-table-column-sort{
+  color: #000;
+}
+.over_hide{overflow: hidden;}
+.mr08{margin-right: 8px}
+.ml8{margin-left: 8px;}
+.mr15{margin-right: 15px;}
+.mr30{margin-right: 30px;}
+.ml20{margin-left: 20px}
+.mb20{margin-bottom: 20px;}
+.float-r{float:right;}
+.p30{
+  padding:30px;
+  box-sizing: border-box;
+}
+.bg_fff{background: #ffffff}
+/*空页面*/
+.empty_icon{
+  width: 100%;
+  text-align: center;
+}
+.empty_icon img {
+  width: 120px;
+  margin: 40px auto 0;
+}
+.empty_icon p{
+  font-size: 14px;
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 15px;
+}

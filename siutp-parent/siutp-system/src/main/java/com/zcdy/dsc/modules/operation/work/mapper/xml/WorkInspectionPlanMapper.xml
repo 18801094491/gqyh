@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkInspectionPlanMapper">
+
+    <select id="slectPageData" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkInspectionPlanVo">
+        select t.id,
+        t.tpl_id tplId,
+        t2.tpl_name tplName,
+        t.plan_name planName,
+        t.route_id routeId,
+        t3.name routeName,
+        t.start_date startDate,
+        t.end_date endDate,
+        t.period,
+        t.period_execute_date periodExecuteDate,
+        t.plan_status planStatus,
+        t4.item_text planStatusName,
+        (SELECT GROUP_CONCAT(tt.user_id) FROM work_inspection_plan_member tt WHERE tt.plan_id=t.id) usersId,
+        (SELECT GROUP_CONCAT(users.realname) FROM work_inspection_plan_member tt LEFT JOIN sys_user users on
+        users.id=tt.user_id WHERE tt.plan_id=t.id) usersName,
+        t.create_by createBy,
+        t5.realname createByName
+        from work_inspection_plan t
+        left join work_job_template t2 on t2.id = t.tpl_id
+        left join work_inspection_route t3 on t3.id = t.route_id
+        left join v_sys_dict_item t4 on t4.item_value=t.plan_status and t4.dict_code='working_status'
+        left join sys_user t5 on t5.username=t.create_by
+        where t.del_flag='0'
+        <if test="param.planName!=null and param.planName!=''">
+            and t.plan_name like concat('%',#{param.planName},'%')
+        </if>
+        order by t.create_time desc
+    </select>
+    <select id="selectByPlanId" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkInspectionPlanVo">
+        select t.id,
+               t.tpl_id                                                                                      tplId,
+               t2.tpl_name                                                                                   tplName,
+               t.plan_name                                                                                   planName,
+               t.route_id                                                                                    routeId,
+               t3.name                                                                                       routeName,
+               t.start_date                                                                                  startDate,
+               t.end_date                                                                                    endDate,
+               t.period,
+               t.period_execute_date                                                                         periodExecuteDate,
+               t.plan_status                                                                                 planStatus,
+               t4.item_text                                                                                  planStatusName,
+               (SELECT GROUP_CONCAT(tt.user_id) FROM work_inspection_plan_member tt WHERE tt.plan_id = t.id) usersId,
+               (SELECT GROUP_CONCAT(users.realname)
+                FROM work_inspection_plan_member tt
+                         LEFT JOIN sys_user users on
+                    users.id = tt.user_id
+                WHERE tt.plan_id = t.id)                                                                     usersName,
+               t.create_by                                                                                   createBy,
+               t5.realname                                                                                   createByName
+        from work_inspection_plan t
+                 left join work_job_template t2 on t2.id = t.tpl_id
+                 left join work_inspection_route t3 on t3.id = t.route_id
+                 left join v_sys_dict_item t4 on t4.item_value = t.plan_status and t4.dict_code = 'working_status'
+                 left join sys_user t5 on t5.username = t.create_by
+        where t.del_flag = '0'
+          and t.id = #{planId}
+    </select>
+</mapper>

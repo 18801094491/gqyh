@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptGoodsApplyMapper">
+
+
+    <select id="selectApplyInfo" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptGoodsApplyVo">
+        SELECT
+            ta.id,
+            ta.create_by createBy,
+            ta.create_time createTime,
+            ta.emergent_level emergentValue,
+            td.item_text   emergenText,
+            ta.wanted_time wantedTime,
+            te.item_text verifyStatusValue,
+            ta.verify_status verifyStatus,
+            ta.reason reason,
+            GROUP_CONCAT( CONCAT_WS(': ',tc.tool_name, tb.amount)) as useTool
+             FROM
+            opt_goods_apply ta
+            LEFT JOIN opt_goods_apply_item tb ON  tb.goods_applyId=ta.id
+            LEFT JOIN opt_tool tc ON  tc.id=tb.data_id
+            LEFT JOIN sys_dict_item td ON  td.dict_id='1225641476102033410' AND td.item_value=ta.emergent_level
+            LEFT JOIN sys_dict_item te ON  te.dict_id='1225724767564066817' AND te.item_value=ta.verify_status
+            <where>
+                tb.store_id in
+                <foreach collection="storeList" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </where>
+            AND tb.del_flag=0
+            <if test="createBy!=null and createBy!=''">
+                and ta.create_by like concat('%',#{createBy},'%')
+            </if>
+            <if test="verifyStatus!=null and verifyStatus!=''">
+                AND  ta.verify_status =#{verifyStatus}
+            </if>
+            <if test="startTime!=null and startTime!=''">
+                AND DATE_FORMAT( ta.create_time, '%Y-%m-%d' ) &gt;= #{startTime} 
+            </if>
+             <if test="endTime!=null and endTime!=''">
+                AND DATE_FORMAT( ta.create_time, '%Y-%m-%d' ) &lt;= #{endTime}
+            </if>
+            GROUP BY ta.id
+    </select>
+
+    <select id="selectApplyHistory" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptGoodsMyApplyVo">
+        SELECT
+        ta.id,
+        ta.create_by createBy,
+        ta.create_time createTime,
+        GROUP_CONCAT( CONCAT_WS(': ', (SELECT name from sys_category where code=tc.tool_name), tb.amount)) as useTool,
+        te.item_text  verifyStatusValue,
+        ta.verify_status verifyStatus,
+        ta.expectback_time expectbackTime,
+        ta.wanted_time wantedTime,
+        ta.reason reason
+        FROM
+        opt_goods_apply ta
+        LEFT JOIN opt_goods_apply_item tb ON  tb.goods_applyId=ta.id
+        LEFT JOIN opt_tool tc ON  tc.id=tb.data_id
+        LEFT JOIN sys_dict_item te ON  te.dict_id='1225724767564066817' AND te.item_value=ta.verify_status
+        WHERE ta.create_by=#{name}
+        AND tb.del_flag=0
+        <if test="verifyStatus!=null and verifyStatus!=''">
+            AND  ta.verify_status =#{verifyStatus}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND DATE_FORMAT( ta.create_time, '%Y-%m-%d' ) &gt;= #{startTime} 
+        </if>
+         <if test="endTime!=null and endTime!=''">
+            AND DATE_FORMAT( ta.create_time, '%Y-%m-%d' ) &lt;= #{endTime}
+        </if>
+        GROUP BY ta.id
+        ORDER BY te.item_text
+    </select>
+
+    <select id="applyHistoryAll" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptGoodsMyApplyVo">
+        SELECT
+        ta.id,
+        ta.create_by createBy,
+        ta.create_time createTime,
+        GROUP_CONCAT( CONCAT_WS(': ',(SELECT name from sys_category where code=tc.tool_name), tb.amount)) as useTool,
+        te.item_text   verifyStatusValue,
+        ta.verify_status verifyStatus,
+        ta.expectback_time expectbackTime,
+        ta.wanted_time wantedTime,
+        ta.reason reason
+        FROM
+        opt_goods_apply ta
+        LEFT JOIN opt_goods_apply_item tb ON  tb.goods_applyId=ta.id
+        LEFT JOIN opt_tool tc ON  tc.id=tb.data_id
+        LEFT JOIN sys_dict_item te ON  te.dict_id='1225724767564066817' AND te.item_value=ta.verify_status
+        WHERE  tb.del_flag=0
+        <if test="name!=null and name!=''">
+            AND  ta.create_by like concat('%',#{name},'%')
+        </if>
+        <if test="verifyStatus!=null and verifyStatus!=''">
+            AND  ta.verify_status =#{verifyStatus}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND DATE_FORMAT( ta.create_time, '%Y-%m-%d' ) &gt;= #{startTime} 
+        </if>
+         <if test="endTime!=null and endTime!=''">
+         	 AND DATE_FORMAT( ta.create_time, '%Y-%m-%d' ) &lt;= #{endTime}
+        </if>
+        GROUP BY ta.id
+        ORDER BY te.item_text
+    </select>
+
+
+    <resultMap id="BaseResultMap" type="com.zcdy.dsc.modules.operation.equipment.vo.OptGoodsApplyInfoVo" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="wantedTime" property="wantedTime" jdbcType="VARCHAR" />
+        <result column="expectbackTime" property="expectbackTime" jdbcType="VARCHAR" />
+        <result column="emergentLevel" property="emergentLevel" jdbcType="VARCHAR" />
+        <result column="emergenText" property="emergenText" jdbcType="VARCHAR" />
+        <result column="reason" property="reason" jdbcType="VARCHAR" />
+        <collection property="applyItem" resultMap="ItemListResultMap" />
+    </resultMap>
+
+    <resultMap id="ItemListResultMap" type="com.zcdy.dsc.modules.operation.equipment.vo.OptApplyItemVo" >
+        <result column="storeId" property="storeId" jdbcType="VARCHAR" />
+        <result column="storeName" property="storeName" jdbcType="VARCHAR" />
+        <result column="dataId" property="dataId" jdbcType="VARCHAR" />
+        <result column="dataName" property="dataName" jdbcType="VARCHAR" />
+        <result column="amount" property="amount" jdbcType="VARCHAR" />
+        
+        <result column="dataNameCode" property="dataNameCode" jdbcType="VARCHAR" />
+        <result column="toolModel" property="toolModel" jdbcType="VARCHAR" />
+        <result column="toolModelCode" property="toolModelCode" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="queryByApplyId" resultMap="BaseResultMap">
+        SELECT
+            ta.id,
+            ta.create_by createBy,
+            ta.create_time createTime,
+            ta.verify_status verifyStatus,
+            ta.emergent_level emergentLevel,
+            td.item_text   emergenText,
+            ta.expectback_time expectbackTime,
+            ta.wanted_time wantedTime,
+            ta.reason reason,
+            tb.store_id storeId,
+            tf.store_name storeName,
+            tb.data_id dataId,
+            (SELECT name from sys_category where code=tc.tool_name) dataName,
+            tc.tool_name dataNameCode,
+			tc.tool_model toolModelCode,
+			(SELECT name from sys_category where code=tc.tool_model) toolModel,
+            tb.amount amount
+        FROM
+            opt_goods_apply ta
+        LEFT JOIN opt_goods_apply_item tb ON tb.goods_applyId = ta.id
+        LEFT JOIN opt_tool tc ON tc.id = tb.data_id
+        LEFT JOIN opt_store tf ON tf.id = tb.store_id
+        LEFT JOIN sys_dict_item td ON  td.dict_id='1225641476102033410' AND td.item_value=ta.emergent_level
+        WHERE  ta.id=#{applyId}
+        AND   tb.del_flag=0
+    </select>
+</mapper>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.equipment.mapper.OptEquipmentMapper">
+    <!-- 查询分页列表 -->
+    <select id="getList" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptEquipmentModel">
+        SELECT
+        eq.id id,
+        eq.equipment_sn equipmentSn,
+        eq.equipment_name equipmentName,
+        cat1.name equipmentType,
+        cat2.name equipmentCategory,
+        eq.equipment_mode equipmentMode,
+        (SELECT name from sys_category where code=eq.equipment_mode) equipmentModeName,
+        eq.equipment_specs equipmentSpecs,
+        (SELECT name from sys_category where code=eq.equipment_specs) equipmentSpecsName,
+        cat3.name equipmentSection,
+        eq.equipment_location equipmentLocation,
+        sup.supplier_name equipmentSupplier,
+        cat4.name equipmentStatus,
+        eq.equipment_img equipmentImg,
+        eq.equipment_operating equipmentOperating,
+        eq.equipment_purchase equipmentPurchase,
+        eq.equipment_revstop equipmentRevstop,
+        (SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code =
+        'working_status' )AND item_value = eq.equipment_revstop) as equipmentRevstopText,
+        ISNULL(gis.model_id) as bindStatus
+        FROM
+        opt_equipment eq
+        LEFT JOIN sys_category cat1 on cat1.code=eq.equipment_type
+        LEFT JOIN sys_category cat2 on cat2.code=eq.equipment_category
+        LEFT JOIN sys_category cat3 on cat3.code=eq.equipment_section
+        LEFT JOIN sys_category cat4 on cat4.code=eq.equipment_status
+        LEFT JOIN opt_supplier sup on sup.id=eq.equipment_supplier
+        left join gis_equipment gis on gis.equipment_id=eq.id
+        where eq.del_flag='0'
+        <if test="equipmentSn!=null and equipmentSn!=''">
+            and eq.equipment_sn like concat('%',#{equipmentSn},'%')
+        </if>
+        <if test="equipmentSupplier!=null and equipmentSupplier!=''">
+            and eq.equipment_supplier=#{equipmentSupplier}
+        </if>
+        <if test="equipmentType!=null and equipmentType!=''">
+            and eq.equipment_type=#{equipmentType}
+        </if>
+        <if test="equipmentRevstop!=null and equipmentRevstop!=''">
+            and eq.equipment_revstop=#{equipmentRevstop}
+        </if>
+        <if test="equipmentCategory!=null and equipmentCategory!=''">
+            and eq.equipment_category=#{equipmentCategory}
+        </if>
+        ORDER BY eq.equipment_type desc, eq.equipment_sn asc
+    </select>
+
+    <!-- 查询分页列表 当前有保养计划的,且是未派工的需要展示派工按钮,其它的默认为已派工,不展示按钮 -->
+    <select id="selectPageListByParam" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptEquipmentModel"
+            parameterType="com.zcdy.dsc.modules.operation.equipment.vo.EquipmentQueryVO">
+        SELECT
+        eq.id id,
+        eq.equipment_sn equipmentSn,
+        eq.equipment_name equipmentName,
+        eq.equipment_type equipmentTypeCode,
+        cat1.name equipmentType,
+        cat2.name equipmentCategory,
+        eq.equipment_mode equipmentMode,
+        (SELECT name from sys_category where code=eq.equipment_mode) equipmentModeName,
+        eq.equipment_specs equipmentSpecs,
+        (SELECT name from sys_category where code=eq.equipment_specs) equipmentSpecsName,
+        cat3.name equipmentSection,
+        eq.equipment_location equipmentLocation,
+        sup.supplier_name equipmentSupplier,
+        eq.equipment_supplier equipmentSupplierId,
+        cat4.name equipmentStatus,
+        eq.equipment_img equipmentImg,
+        eq.equipment_operating equipmentOperating,
+        eq.equipment_purchase equipmentPurchase,
+        eq.equipment_revstop equipmentRevstop,
+        (SELECT item_text FROM sys_dict_item WHERE dict_id = ( SELECT id FROM sys_dict WHERE dict_code =
+        'working_status' )AND item_value = eq.equipment_revstop) as equipmentRevstopText,
+        ISNULL(gis.model_id) as bindStatus,
+        ol.id as labelId,
+        t2.next_plan_date planDate,
+        (select config_value from system_config where config_key='upkeeper.remind.days') countDays,
+        IFNULL(t3.dispatch_status,1) as dispatchStatus,
+        (SELECT GROUP_CONCAT(user_id) FROM opt_equipment_person_responsible where equipment_id=eq.id) as
+        personResponsible,
+        (select GROUP_CONCAT(realname) FROM sys_user WHERE id in (SELECT user_id FROM opt_equipment_person_responsible
+        where equipment_id=eq.id)) as personResponsibleName,
+        ol.label_name as labelName
+        FROM
+        opt_equipment eq
+        LEFT JOIN sys_category cat1 on cat1.code=eq.equipment_type
+        LEFT JOIN sys_category cat2 on cat2.code=eq.equipment_category
+        LEFT JOIN sys_category cat3 on cat3.code=eq.equipment_section
+        LEFT JOIN sys_category cat4 on cat4.code=eq.equipment_status
+        LEFT JOIN opt_supplier sup on sup.id=eq.equipment_supplier
+        left join gis_equipment gis on gis.equipment_id=eq.id
+        left join opt_equipment_label oel on oel.equipment_id = eq.id and valid_status = 1
+        left join opt_label ol on ol.id = oel.label_id
+        left join opt_upkeep_plan t2 on eq.id=t2.opt_id
+        LEFT JOIN opt_upkeep_plan_record t3 on t3.plan_id=t2.id and t3.current='1'
+        where eq.del_flag='0'
+        <if test="param.equipmentSn!=null and param.equipmentSn!=''">
+            and eq.equipment_sn like concat('%',#{param.equipmentSn},'%')
+        </if>
+        <if test="param.equipmentSupplier!=null and param.equipmentSupplier!=''">
+            and eq.equipment_supplier=#{param.equipmentSupplier}
+        </if>
+        <if test="param.equipmentType!=null and param.equipmentType!=''">
+            and eq.equipment_type=#{param.equipmentType}
+        </if>
+        <if test="param.equipmentRevstop!=null and param.equipmentRevstop!=''">
+            and eq.equipment_revstop=#{param.equipmentRevstop}
+        </if>
+        <if test="param.optSection!=null and param.optSection!=''">
+            and eq.equipment_section=#{param.optSection}
+        </if>
+        <if test="param.optLocation!=null and param.optLocation!=''">
+            and eq.equipment_location like concat('%',#{param.optLocation},'%')
+        </if>
+        <if test="param.optName!=null and param.optName!=''">
+            and eq.equipment_name like concat('%',#{param.optName},'%')
+        </if>
+        <if test="param.equipmentCategory!=null and param.equipmentCategory!=''">
+            and eq.equipment_category = #{param.equipmentCategory}
+        </if>
+        ORDER BY eq.equipment_section desc,eq.equipment_type desc, eq.equipment_sn asc,eq.equipment_supplier
+        desc,eq.equipment_mode desc
+    </select>
+
+    <!--  获取资产详情-->
+    <select id="getDetail" resultType="com.zcdy.dsc.modules.operation.equipment.vo.OptEquipmentModel">
+        SELECT eq.id                                                                           id,
+               eq.equipment_sn                                                                 equipmentSn,
+               eq.equipment_name                                                               equipmentName,
+               cat1.name                                                                       equipmentType,
+               eq.equipment_type                                                               equipmentTypeCode,
+               cat2.name                                                                       equipmentCategory,
+               eq.equipment_mode                                                               equipmentMode,
+               (SELECT name from sys_category where code = eq.equipment_mode)                  equipmentModeName,
+               eq.equipment_specs                                                              equipmentSpecs,
+               (SELECT name from sys_category where code = eq.equipment_specs)                 equipmentSpecsName,
+               cat3.name                                                                       equipmentSection,
+               eq.equipment_location                                                           equipmentLocation,
+               sup.supplier_name                                                               equipmentSupplier,
+               cat4.name                                                                       equipmentStatus,
+               eq.equipment_img                                                                equipmentImg,
+               (SELECT COUNT(ta.id) FROM equipment_upkeep ta WHERE ta.equipment_id = eq.id) AS upkeepCount,
+               (SELECT ta.upkeep_time
+                FROM equipment_upkeep ta
+                WHERE ta.equipment_id = eq.id
+                  AND ta.type = '0'
+                ORDER BY ta.create_time desc
+                LIMIT 1)                                                                    AS upkeepTimeWX,
+               (SELECT ta.upkeep_time
+                FROM equipment_upkeep ta
+                WHERE ta.equipment_id = eq.id
+                  AND ta.type = '1'
+                ORDER BY ta.create_time desc
+                LIMIT 1)                                                                    AS upkeepTimeBY
+        FROM opt_equipment eq
+                 LEFT JOIN sys_category cat1 on cat1.code = eq.equipment_type
+                 LEFT JOIN sys_category cat2 on cat2.code = eq.equipment_category
+                 LEFT JOIN sys_category cat3 on cat3.code = eq.equipment_section
+                 LEFT JOIN sys_category cat4 on cat4.code = eq.equipment_status
+                 LEFT JOIN opt_supplier sup on sup.id = eq.equipment_supplier
+        where eq.id = #{id}
+    </select>
+
+</mapper>
+
+

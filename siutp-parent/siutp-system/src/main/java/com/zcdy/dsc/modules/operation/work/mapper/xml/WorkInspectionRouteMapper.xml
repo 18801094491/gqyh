@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcdy.dsc.modules.operation.work.mapper.WorkInspectionRouteMapper">
+
+    <select id="pointList" resultType="com.zcdy.dsc.modules.operation.work.vo.WorkPointDropdown">
+        SELECT t.id id,
+               t2.`name` name,
+               t2.latitude,
+               t2.longitude,
+                   concat('[', t4.name, '][', t3.equipment_location, '][', t3.equipment_sn, ']') equipmentName
+        FROM work_inspection_route_point t
+                 LEFT JOIN work_inspection_point t2 ON t2.id = t.point_id
+                 left join opt_equipment t3 on t3.id = t2.equipment_id
+                 left join sys_category t4 on t4.code = t3.equipment_section
+        where t.route_id = #{routId}
+
+    </select>
+</mapper>
